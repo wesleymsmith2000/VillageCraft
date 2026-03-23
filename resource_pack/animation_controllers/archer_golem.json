@@ -1,0 +1,72 @@
+{
+  "format_version": "1.20.0",
+  "animation_controllers": {
+    "controller.animation.archer_golem.move": {
+      "initial_state": "idle",
+      "states": {
+        "idle": {
+          "animations": [
+            "animation.archer_golem.idle"
+          ],
+          "transitions": [
+            {
+              "walking": "query.ground_speed > 0.1"
+            },
+            {
+              "aiming": "query.is_aiming"
+            }
+          ]
+        },
+        "walking": {
+          "animations": [
+            "animation.archer_golem.walk"
+          ],
+          "transitions": [
+            {
+              "idle": "query.ground_speed < 0.1"
+            },
+            {
+              "aiming": "query.is_aiming"
+            }
+          ]
+        },
+        "aiming": {
+          "animations": [
+            "animation.archer_golem.aiming"
+          ],
+          "transitions": [
+            {
+              "idle": "!query.is_aiming && query.ground_speed < 0.1"
+            },
+            {
+              "walking": "!query.is_aiming && query.ground_speed > 0.1"
+            }
+          ]
+        }
+      }
+    },
+    "controller.animation.archer_golem.attack": {
+      "initial_state": "not_attacking",
+      "states": {
+        "not_attacking": {
+          "animations": [],
+          "transitions": [
+            {
+              "attacking": "query.is_using_item"
+            }
+          ]
+        },
+        "attacking": {
+          "animations": [
+            "animation.archer_golem.shoot"
+          ],
+          "transitions": [
+            {
+              "not_attacking": "!query.is_using_item"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

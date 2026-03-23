@@ -1,0 +1,156 @@
+{
+  "format_version": "1.20.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "custom:archer_golem",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "components": {
+      "minecraft:health": {
+        "value": 40,
+        "max": 40
+      },
+      "minecraft:armor": {
+        "value": 0
+      },
+      "minecraft:type_family": {
+        "family": ["golem", "archer_golem"]
+      },
+      "minecraft:collision_box": {
+        "width": 0.9,
+        "height": 2.7
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:physics": {
+        "has_gravity": true,
+        "has_collision": true
+      },
+      "minecraft:movement": {
+        "value": 0.2
+      },
+      "minecraft:navigation.walk": {
+        "can_path_over_water": false,
+        "avoid_sun": false
+      },
+      "minecraft:entity_ai": {
+        "priority": [
+          {
+            "weight": 1,
+            "behavior": "minecraft:behavior.melee_attack",
+            "conditions": []
+          }
+        ]
+      },
+      "minecraft:behavior.melee_attack": {
+        "speed_multiplier": 0.5,
+        "track_target": true,
+        "require_complete_path": false
+      },
+      "minecraft:behavior.ranged_attack": {
+        "speed_multiplier": 0.5,
+        "attack_radius": 32,
+        "attack_radius_vertical": 32,
+        "targeting_conditions": [
+          {
+            "test": "is_family",
+            "subject": "target",
+            "value": "hostile"
+          }
+        ]
+      },
+      "minecraft:behavior.look_at_player": {
+        "look_distance": 8.0,
+        "probability": 0.02
+      },
+      "minecraft:behavior.random_look_around": {
+        "look_distance": 8.0,
+        "probability": 0.1
+      },
+      "minecraft:behavior.find_mount": {},
+      "minecraft:behavior.hurt_by_react": {
+        "alert_others": true
+      },
+      "minecraft:behavior.flee_sun": {},
+      "minecraft:behavior.go_home": {
+        "speed_multiplier": 1.0,
+        "fail_radius": 50
+      },
+      "minecraft:behavior.panic": {
+        "speed_multiplier": 0.66
+      },
+      "minecraft:behavior.random_stroll": {
+        "speed_multiplier": 0.4,
+        "xz_dist": 10,
+        "y_dist": 7
+      },
+      "minecraft:loot": {
+        "table": "loot_tables/entities/archer_golem.json"
+      },
+      "minecraft:experience_reward": {
+        "on_death": "query.last_hit_by_player ? 5 : 0"
+      },
+      "minecraft:despawn": {
+        "despawn_distance": 128
+      },
+      "minecraft:rideable": {
+        "controlling_seat": 0,
+        "crouching_skip_interact": true,
+        "family_types": ["player"],
+        "interact_text": "action.interact.ride.horse",
+        "seats": [
+          {
+            "position": [0.0, 2.5, 0.0],
+            "max_rider_count": 1,
+            "min_rider_count": 0
+          }
+        ]
+      },
+      "minecraft:tameable": {
+        "tame_items": ["emerald"],
+        "tame_event": "custom:on_tamed"
+      },
+      "minecraft:is_baby": false,
+      "minecraft:on_death": {}
+    },
+    "events": {
+      "custom:on_tamed": {
+        "add": {
+          "component_groups": ["tamed"]
+        },
+        "run_command": {
+          "command": "title @s title Archer Golem Tamed!"
+        }
+      },
+      "minecraft:entity_spawned": {
+        "add": {
+          "component_groups": ["wild"]
+        }
+      }
+    },
+    "component_groups": {
+      "wild": {
+        "minecraft:behavior.melee_attack": {
+          "speed_multiplier": 0.5,
+          "track_target": true,
+          "require_complete_path": false
+        },
+        "minecraft:behavior.hurt_by_react": {
+          "alert_others": true
+        }
+      },
+      "tamed": {
+        "minecraft:behavior.follow_owner": {
+          "speed_multiplier": 1.0,
+          "start_distance": 10,
+          "stop_distance": 2
+        },
+        "minecraft:owners": []
+      }
+    }
+  }
+}

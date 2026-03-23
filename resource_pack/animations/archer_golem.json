@@ -1,0 +1,80 @@
+{
+  "format_version": "1.20.0",
+  "animations": {
+    "animation.archer_golem.idle": {
+      "anim_time_update": "query.modified_move_vector.z",
+      "loop": true,
+      "bones": {
+        "Body": {
+          "rotation": [0, 0, 0]
+        },
+        "Head": {
+          "rotation": [0, "query.head_yaw", 0]
+        },
+        "LeftArm": {
+          "rotation": [-90, 0, 0]
+        },
+        "RightArm": {
+          "rotation": [-90, 0, 0]
+        }
+      }
+    },
+    "animation.archer_golem.walk": {
+      "anim_time_update": "query.ground_speed / 10.0",
+      "loop": true,
+      "bones": {
+        "Body": {
+          "rotation": [0, 0, 0]
+        },
+        "Head": {
+          "rotation": [0, "query.head_yaw", 0]
+        },
+        "LeftArm": {
+          "rotation": ["query.anim_time * 360", 0, 0]
+        },
+        "RightArm": {
+          "rotation": ["-query.anim_time * 360", 0, 0]
+        },
+        "LeftLeg": {
+          "rotation": ["query.anim_time * 360", 0, 0]
+        },
+        "RightLeg": {
+          "rotation": ["-query.anim_time * 360", 0, 0]
+        }
+      }
+    },
+    "animation.archer_golem.aiming": {
+      "anim_time_update": "query.modified_move_vector.z",
+      "loop": true,
+      "bones": {
+        "Body": {
+          "rotation": [0, 0, 0]
+        },
+        "Head": {
+          "rotation": [0, "query.head_yaw", 0]
+        },
+        "LeftArm": {
+          "rotation": [-120, 0, -45],
+          "position": [-0.5, 0.0, 0.0]
+        },
+        "RightArm": {
+          "rotation": [-120, 0, 45],
+          "position": [0.5, 0.0, 0.0]
+        }
+      }
+    },
+    "animation.archer_golem.shoot": {
+      "anim_time_update": "query.is_using_item",
+      "loop": false,
+      "bones": {
+        "RightArm": {
+          "rotation": [
+            "0.0|0.0;0.1|-60;0.5|-90",
+            0,
+            0
+          ]
+        }
+      }
+    }
+  }
+}

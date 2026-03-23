@@ -1,0 +1,35 @@
+{
+  "format_version": "1.20.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "custom:archer_golem",
+      "min_engine_version": "1.20.0",
+      "material": "entity_alphatest",
+      "namespace": "minecraft",
+      "geometry": "geometry.snow_golem",
+      "animations": {
+        "move": "animation.archer_golem.move",
+        "attack": "animation.archer_golem.attack",
+        "aiming": "animation.archer_golem.aiming"
+      },
+      "animation_controllers": [
+        {
+          "move": "controller.animation.archer_golem.move"
+        },
+        {
+          "attack": "controller.animation.archer_golem.attack"
+        }
+      ],
+      "render_controllers": [
+        "controller.render.archer_golem"
+      ],
+      "textures": {
+        "default": "textures/entity/archer_golem/archer_golem"
+      },
+      "spawn_egg": {
+        "base_color": "#b0b0b0",
+        "overlay_color": "#ffffff"
+      }
+    }
+  }
+}

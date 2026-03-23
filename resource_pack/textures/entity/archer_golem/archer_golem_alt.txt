@@ -1,0 +1,6 @@
+# Placeholder: archer_golem_alt.png
+# Tamed variant texture for when archer golem has an owner
+# TODO: Create texture variant with:
+# - Golden trim or collar marking ownership
+# - Brighter coloring
+# - Different face expression

@@ -1,0 +1,7 @@
+# Placeholder: archer_golem_emissive_head.png
+# Emissive map layer for head glow when aiming
+# TODO: Create texture with:
+# - Eyes glowing bright (255, 255, 255) on dark background
+# - Optional forehead marking with glow
+# - All other areas transparent/black
+# - Used as overlay layer when query.is_aiming is true

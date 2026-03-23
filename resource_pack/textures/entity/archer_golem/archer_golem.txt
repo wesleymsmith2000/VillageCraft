@@ -1,0 +1,8 @@
+# Placeholder: archer_golem.png
+# This is the main texture for the archer golem
+# Current setup: Reuses snow_golem UV layout from resource pack
+# TODO: Create 64x64 or 128x128 texture with:
+# - Snow golem base body geometry
+# - Blue/cyan coloring for archer identity
+# - Dispenser-like patterns on right arm face
+# - Eyes/face details showing alertness

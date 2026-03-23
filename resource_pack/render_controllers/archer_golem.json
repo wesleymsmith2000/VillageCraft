@@ -1,0 +1,54 @@
+{
+  "format_version": "1.20.0",
+  "render_controllers": {
+    "controller.render.archer_golem": {
+      "arrays": {
+        "textures": {
+          "Array.skins": [
+            "Texture.default",
+            "Texture.archer_golem_alt"
+          ]
+        }
+      },
+      "geometry": "Geometry.default",
+      "shadow_depth_bias": -1820,
+      "part_visibility": [
+        {
+          "part_name": "Body",
+          "condition": "query.is_riding"
+        },
+        {
+          "part_name": "Head",
+          "condition": "!query.is_riding"
+        },
+        {
+          "part_name": "LeftArm",
+          "condition": "true"
+        },
+        {
+          "part_name": "RightArm",
+          "condition": "true"
+        }
+      ],
+      "color_multiplers": {
+        "default_color": "#ffffff",
+        "emissive_color": "#ffffff"
+      },
+      "texture": "Array.skins[0]",
+      "on_player_controlled": {
+        "texture": "Array.skins[0]"
+      },
+      "on_controlled_by_other": {
+        "texture": "Array.skins[1]"
+      },
+      "overlay_layers": [
+        {
+          "layer_name": "layer.emissive_head",
+          "texture": "textures/entity/archer_golem/archer_golem_emissive_head",
+          "use_overlay": "query.is_aiming && query.is_owner_identifier",
+          "condition": "TODO: Implement emissive head rendering when aiming is active. Verify multi-layer UV support in Bedrock 1.20.0+"
+        }
+      ]
+    }
+  }
+}
