@@ -235,6 +235,28 @@ The fish breeding system allows regular fish to breed via kelp and enables octop
 - [ ] Add config for fish item breeding rate multipliers
 - [ ] Clarify behavior for tropical variants and named fish
 
+---
+
+## 7. Hanging Ladder
+
+Hanging ladders provide vertical climb with support transfer in both directions.
+
+### Implementation Notes
+
+- **Block ID**: `custom:hanging_ladder`
+- **Crafting**: 8x `minecraft:ladder` around `minecraft:chain` -> 9x `custom:hanging_ladder`
+- **Support rules**:
+  - Acts as normal ladder when any horizontal block is solid.
+  - Can remain in place if a supported `custom:hanging_ladder` or `minecraft:ladder` is directly above or below.
+- **Extension**:
+  - Right-click top face: place new hanging ladder above when holding one.
+  - Right-click bottom face: place new hanging ladder below when holding one.
+
+### TODO Items
+
+- [ ] Add climbing animation control for custom ladder type (optional)
+- [ ] Add recipe variants / chain materials (copper chain, gold chain etc.)
+- [ ] Add block models and texture for glowing or themed ladders
 
 ---
 
@@ -298,4 +320,27 @@ resource_pack/
 - [Block JSON Format](https://learn.microsoft.com/en-us/minecraft/creator/reference/content/blockreference/)
 - [Behavior Pack Guide](https://learn.microsoft.com/en-us/minecraft/creator/documents/behaviorpack/)
 - [GameTest Framework](https://learn.microsoft.com/en-us/minecraft/creator/documents/gametestgettingstarted/)
+
+---
+
+## Credits & Attribution
+
+### Primary Author
+**OdinVanguard** - Lead developer and architect of the VillageCraft add-on
+
+### AI Assistance
+This project was developed with significant assistance from AI tools:
+
+- **GitHub Copilot (Codex)** - Code generation, debugging, and implementation assistance
+- **ChatGPT** - Design consultation, documentation writing, and feature ideation
+- **VS Code** - Integrated development environment with AI-powered features
+
+### Special Thanks
+- Minecraft Bedrock community for inspiration and feedback
+- Microsoft for providing excellent developer tools and documentation
+- Open source contributors to the Minecraft Script API ecosystem
+
+---
+
+*VillageCraft - Expanding the Minecraft village experience since 2024*
 
