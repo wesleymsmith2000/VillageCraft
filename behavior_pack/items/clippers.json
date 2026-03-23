@@ -17,6 +17,12 @@
       "minecraft:display_name": {
         "value": "Clippers"
       },
+      "minecraft:lore": {
+        "lore": [
+          "Harvest apples from leaves",
+          "Renewable crop harvesting"
+        ]
+      },
       "minecraft:enchantable": {
         "slots": ["sword"]
       },
@@ -30,3 +36,4 @@
     }
   }
 }
+
