@@ -16,7 +16,7 @@ const CONFIG = {
   OCTOPUS_ID: "minecraft:axolotl",  // Closest equivalent to octopus
   GLOWING_OCTOPUS_ID: "custom:glowing_octopus",
   OCTOPUS_TYPES: ["minecraft:axolotl", "custom:glowing_octopus"],
-  BREEDING_ITEM: "minecraft:kelp",
+  BREEDING_ITEMS: ["minecraft:kelp", "minecraft:dried_kelp"],
   OCTOPUS_BREEDING_ITEMS: [
     "minecraft:cod",
     "minecraft:salmon",
@@ -25,6 +25,10 @@ const CONFIG = {
     "minecraft:cooked_cod",
     "minecraft:cooked_salmon"
   ],
+  MUTATION_CHANCE: 0.001,  // 0.1% chance for visual mutation in tropical fish
+  TROPICAL_VARIANT_RANGE: 35,  // approximate possible tropical fish variants
+  DRIED_KELP_FEED_RADIUS: 8,
+  DRIED_KELP_CONSUME_RADIUS: 2,
   BABY_COOLDOWN: 5 * 60 * 20,  // 5 minutes in ticks (1 tick = 50ms)
   BREED_SUCCESS_CHANCE: 0.5,    // 50% chance to breed
   PARTICLES: "minecraft:happy_villager",
@@ -40,6 +44,70 @@ const fishInLove = new Map(); // key: entityId -> { timestamp, partnerId }
  */
 function isFish(entity) {
   return CONFIG.FISH_TYPES.includes(entity.typeId) || CONFIG.OCTOPUS_TYPES.includes(entity.typeId);
+}
+
+function getTropicalVariant(entity) {
+  if (!entity) return null;
+  const variantComp = entity.getComponent("minecraft:tropical_fish_variant") || entity.getComponent("minecraft:variant");
+  if (!variantComp) return null;
+  try {
+    if (typeof variantComp.value !== "undefined") {
+      return variantComp.value;
+    }
+    if (typeof variantComp.typeId !== "undefined") {
+      return variantComp.typeId;
+    }
+  } catch (e) {
+    return null;
+  }
+  return null;
+}
+
+function setTropicalVariant(entity, variant) {
+  if (!entity) return;
+  const variantComp = entity.getComponent("minecraft:tropical_fish_variant") || entity.getComponent("minecraft:variant");
+  if (!variantComp) return;
+  try {
+    if (typeof variantComp.value !== "undefined") {
+      variantComp.value = variant;
+    } else if (typeof variantComp.typeId !== "undefined") {
+      variantComp.typeId = variant;
+    }
+  } catch (e) {
+    console.warn(`[Fish Breeding] Failed to set tropical variant: ${e.message}`);
+  }
+}
+
+function chooseChildTropicalVariant(parentA, parentB) {
+  const variantA = getTropicalVariant(parentA);
+  const variantB = getTropicalVariant(parentB);
+  let childVariant = variantA || variantB;
+
+  // Randomly inherit variant from one of parents (if available)
+  if (variantA !== null && variantB !== null) {
+    childVariant = Math.random() < 0.5 ? variantA : variantB;
+  }
+
+  // Mutation chance: random variant
+  if (Math.random() < CONFIG.MUTATION_CHANCE) {
+    childVariant = Math.floor(Math.random() * CONFIG.TROPICAL_VARIANT_RANGE);
+  }
+
+  return childVariant;
+}
+
+function getItemTypeFromEntity(itemEntity) {
+  if (!itemEntity) return null;
+  if (itemEntity.typeId !== "minecraft:item") return null;
+  try {
+    const itemComp = itemEntity.getComponent("minecraft:item");
+    if (itemComp && itemComp.itemStack && itemComp.itemStack.typeId) {
+      return itemComp.itemStack.typeId;
+    }
+  } catch (e) {
+    // component might not exist or value may be unavailable
+  }
+  return null;
 }
 
 /**
@@ -130,21 +198,21 @@ function getNearbyLoveFish(fish, searchRadius = 8) {
       // Skip self and already processed fish
       if (entity === fish || entity.id === fish.id) {
         continue;
-            // Check if entity is a fish or octopus
-            if (!isFish(entity)) {
-              continue;
-            }
-      
-            // Allow breeding if:
-            // 1. Both are same type (fish with fish), OR
-            // 2. One is octopus (octopus with any fish)
-            const sameType = entity.typeId === fish.typeId;
-            const hasOctopus = entity.typeId === CONFIG.OCTOPUS_ID || fish.typeId === CONFIG.OCTOPUS_ID;
-      
-            if (!sameType && !hasOctopus) {
-              continue;
-            }
-      
+      }
+
+      // Check if entity is a fish or octopus
+      if (!isFish(entity)) {
+        continue;
+      }
+
+      // Allow breeding if:
+      // 1. Both are same type (fish with fish), OR
+      // 2. One is octopus (octopus with any fish)
+      const sameType = entity.typeId === fish.typeId;
+      const hasOctopus = entity.typeId === CONFIG.OCTOPUS_ID || fish.typeId === CONFIG.OCTOPUS_ID;
+
+      if (!sameType && !hasOctopus) {
+        continue;
       }
       
       // Check if in love mode
@@ -205,6 +273,14 @@ function breedFish(fish1, fish2) {
         ageComponent.age = -24000;  // Baby age (negative = child)
       }
       
+      // Tropical fish inheritance / mutation
+      if (babySpecies === "minecraft:tropical_fish") {
+        const childVariant = chooseChildTropicalVariant(fish1, fish2);
+        if (childVariant !== null) {
+          setTropicalVariant(baby, childVariant);
+        }
+      }
+
       const fishName = babySpecies.split(":")[1];
       console.warn(`[Fish Breeding] Spawned baby ${fishName}`);
     } catch (e) {
@@ -264,7 +340,7 @@ world.afterEvents.playerInteractWithEntity.subscribe((event) => {
       break;
     }
 
-    if (target.typeId !== CONFIG.OCTOPUS_ID && item.typeId === CONFIG.BREEDING_ITEM) {
+    if (target.typeId !== CONFIG.OCTOPUS_ID && CONFIG.BREEDING_ITEMS.includes(item.typeId)) {
       hasBreedingItem = true;
       breedingSlot = i;
       break;
@@ -306,6 +382,58 @@ world.afterEvents.playerInteractWithEntity.subscribe((event) => {
   }
   console.warn(`[Fish Breeding] Put ${target.typeId} in love mode`);
 });
+
+/**
+ * Dried kelp floating in water triggers nearby fish into love mode
+ */
+function processFloatingDriedKelp() {
+  try {
+    const players = world.getAllPlayers();
+    for (const player of players) {
+      const dimension = player.dimension;
+      const items = dimension.getEntities({
+        type: "minecraft:item",
+        maxDistance: 64,
+        location: player.location
+      });
+
+      for (const itemEntity of items) {
+        const itemType = getItemTypeFromEntity(itemEntity);
+        if (itemType !== "minecraft:dried_kelp") continue;
+
+        // Find nearby fish in water
+        const nearbyFish = dimension.getEntities({
+          maxDistance: CONFIG.DRIED_KELP_FEED_RADIUS,
+          location: itemEntity.location
+        }).filter(entity => isFish(entity) && !isInLove(entity) && canBreed(entity));
+
+        if (nearbyFish.length === 0) continue;
+
+        // Attract first eligible fish
+        const fish = nearbyFish[0];
+        putFishInLove(fish);
+        fish.dimension.spawnParticle(CONFIG.PARTICLES, fish.location, { x: 0.3, y: 0.3, z: 0.3 });
+
+        // Try to consume dried kelp item entity; if item stack type accessible
+        try {
+          const itemComp = itemEntity.getComponent("minecraft:item");
+          if (itemComp && itemComp.itemStack) {
+            // Decrease just one units and remove entity if now empty
+            if (itemComp.itemStack.amount > 1) {
+              itemComp.itemStack.amount -= 1;
+            } else {
+              itemEntity.kill();
+            }
+          }
+        } catch (e) {
+          // If consumption fails, leave item in world
+        }
+      }
+    }
+  } catch (e) {
+    console.warn(`[Fish Breeding] Floating dried kelp handler error: ${e.message}`);
+  }
+}
 
 /**
  * Tick-based breeding check
@@ -366,6 +494,8 @@ system.runInterval(() => {
         // Octopus check failed
       }
     }
+    // Check floating dried kelp feeding behavior
+    processFloatingDriedKelp();
   } catch (e) {
     console.warn(`[Fish Breeding] Tick handler error: ${e.message}`);
   }
@@ -373,6 +503,6 @@ system.runInterval(() => {
 
 console.warn("[Fish Breeding] System initialized");
 console.warn("[Fish Breeding] Supported fish: " + CONFIG.FISH_TYPES.join(", "));
-console.warn("[Fish Breeding] Breeding item: " + CONFIG.BREEDING_ITEM);
+console.warn("[Fish Breeding] Breeding items: " + CONFIG.BREEDING_ITEMS.join(", "));
 console.warn("[Fish Breeding] Love duration: " + (CONFIG.LOVE_MODE_DURATION / 1000) + " seconds");
 console.warn("[Fish Breeding] Octopus (axolotl) can breed with any fish type");

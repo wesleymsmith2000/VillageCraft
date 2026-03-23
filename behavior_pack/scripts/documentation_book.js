@@ -134,6 +134,8 @@ BREEDING:
 5. Get 2+ fish in love mode nearby
 6. They breed, spawn baby fish
 7. Consume 1 kelp per fish
+8. Consume dried kelp too
+TIP: Dried kelp also works as breeding food and can be dropped in water to attract fish.
 
 SPECIAL: Octopus can breed with ANY fish type!
 Result: Always spawns baby octopus
@@ -145,6 +147,7 @@ LOVE MODE: 3 seconds to find mate
 SUCCESS: 50% chance per pairing
 BABY: Takes time to grow to adult
 RANGE: Fish find mates within 8 blocks
+TRAITS: Tropical fish offspring inherit one parent's visual traits (0.1% mutation chance)
 
 === HANGING LADDER ===
 
@@ -236,7 +239,6 @@ function createBookPages() {
   const pages = [];
   const lines = DOCUMENTATION.split('\n');
   let currentPage = '';
-  
   for (const line of lines) {
     const potentialPage = currentPage + line + '\n';
     

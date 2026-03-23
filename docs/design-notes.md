@@ -221,11 +221,12 @@ Village A ←→ Central Hub ←→ Village B
 The fish breeding system allows regular fish to breed via kelp and enables octopus to be bred by feeding any fish item.
 
 ### Implementation Notes
-
-- **Breeding Item (fish)**: Octopus (axolotl) reproduces when given fish items (cod, salmon, tropical fish, pufferfish, cooked cod/salmon).
+- **Breeding Item (fish)**: Octopus (axolotl) reproduces when given fish items (cod, salmon, tropical fish, pufferfish, cooked cod/salmon)
 - **Glowing octopus**: Glowing octopus behaves like regular octopus for breeding and produces glowing offspring when involved.
-- **Regular fish**: Continue using kelp as breeding food (preserves original behavior).
+- **Regular fish**: Continue using kelp as breeding food (preserves original behavior);
+- **Dried kelp**: Also works as breeding food and can be dropped/water-floating to attract fish.
 - **Species mixing**: Octopus + any fish = baby octopus.
+- **Tropical trait inheritance**: New tropical fish offspring inherit one parent’s visual trait; 0.1% chance to mutate to a random visual variant.
 - **Love mode**: 3-second window for finding mates.
 - **Rate control**: 50% chance to produce offspring each pairing.
 
