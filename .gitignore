@@ -1,0 +1,31 @@
+# Build artifacts
+*.mcworld
+*.zip
+dist/
+build/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+.directory
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Node modules (if using scripts)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Temporary files
+.tmp/
+temp/

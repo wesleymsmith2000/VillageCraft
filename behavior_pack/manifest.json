@@ -1,0 +1,24 @@
+{
+  "format_version": 2,
+  "header": {
+    "description": "VillageCraft Behavior Pack - Custom villagers, golems, and village systems",
+    "name": "VillageCraft Behavior Pack",
+    "uuid": "00000000-0000-0000-0000-000000000001",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 20, 0]
+  },
+  "modules": [
+    {
+      "description": "Behavior Pack Module",
+      "type": "data",
+      "uuid": "00000000-0000-0000-0000-000000000002",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "00000000-0000-0000-0000-000000000003",
+      "version": [1, 0, 0]
+    }
+  ]
+}
