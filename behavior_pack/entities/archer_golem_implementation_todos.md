@@ -1,5 +1,46 @@
 # Archer Golem Implementation TODOs
 
+## Interaction Modes (NEW)
+
+The archer golem supports multiple interaction modes for tamed golems controlled by the owner:
+
+### Mode System
+
+1. **Follow Mode** (Default after taming)
+   - Golem follows the owner
+   - Continues to attack hostile mobs autonomously
+   - Event: `custom:toggle_follow`
+
+2. **Idle Mode** (Shift+Click)
+   - Golem stays in place and does random strolls
+   - Continues to attack hostile mobs autonomously
+   - Reduces movement speed to defend a position
+   - Event: `custom:toggle_idle`
+
+3. **Passive Mode** (Normal Click - no redstone held)
+   - Golem sits still with minimal movement
+   - **Does NOT attack** - purely defensive/decorative
+   - Event: `custom:toggle_passive`
+
+### Healing System (Normal Click + Redstone held)
+
+- Right-click golem while holding redstone dust
+- Consumes 1 redstone, heals golem by 10 HP
+- Max health: 40 HP
+- Implemented in `behavior_pack/scripts/archer_golem_interactions.js`
+
+### Script Integration
+
+**Implementation Notes:**
+- TODO: Test `playerInteractWithEntity` event subscription reliability
+- TODO: Verify ownership checking via query API (`query.is_owner_identifier`)
+- TODO: Implement persistence of mode state across chunk reloads
+- TODO: Add mode state visualization (particles or scoreboard)
+
+**File:** `behavior_pack/scripts/archer_golem_interactions.js`
+
+---
+
 ## Emissive Head
 
 When the archer golem is aiming at a target, the head should emit light to show it's actively targeting.
@@ -95,5 +136,10 @@ These placeholder textures should be created:
 - [ ] Particles emit during shooting sequence
 - [ ] Taming with emerald works correctly
 - [ ] Owner-based behavior switching works
+- [ ] **NEW:** Shift+Click toggles between follow/idle modes
+- [ ] **NEW:** Normal click toggles passive mode
+- [ ] **NEW:** Redstone healing works when holding redstone dust
+- [ ] **NEW:** Mode states persist across interactions
+- [ ] **NEW:** Attack behavior retained in follow and idle modes
 - [ ] Multiplayer compatibility (renders for all players)
 

@@ -115,12 +115,34 @@
         "tame_event": "custom:on_tamed"
       },
       "minecraft:is_baby": false,
-      "minecraft:on_death": {}
+      "minecraft:on_death": {},
+      "minecraft:interact": {
+        "interactions": [
+          {
+            "use_item": false,
+            "interaction_text": "action.interact.archer_golem.follow",
+            "on_interact": {
+              "filters": [
+                {
+                  "test": "has_component",
+                  "subject": "self",
+                  "value": "minecraft:tameable"
+                },
+                {
+                  "test": "is_owner",
+                  "subject": "other"
+                }
+              ]
+            },
+            "play_sounds": "random.pop"
+          }
+        ]
+      }
     },
     "events": {
       "custom:on_tamed": {
         "add": {
-          "component_groups": ["tamed"]
+          "component_groups": ["tamed", "follow_mode"]
         },
         "run_command": {
           "command": "title @s title Archer Golem Tamed!"
@@ -129,6 +151,55 @@
       "minecraft:entity_spawned": {
         "add": {
           "component_groups": ["wild"]
+        }
+      },
+      "custom:toggle_follow": {
+        "condition": "query.is_owner_identifier",
+        "add": {
+          "component_groups": ["follow_mode"]
+        },
+        "remove": {
+          "component_groups": ["idle_mode"]
+        },
+        "run_command": {
+          "command": "title @s actionbar Following enabled"
+        }
+      },
+      "custom:toggle_idle": {
+        "condition": "query.is_owner_identifier",
+        "add": {
+          "component_groups": ["idle_mode"]
+        },
+        "remove": {
+          "component_groups": ["follow_mode"]
+        },
+        "run_command": {
+          "command": "title @s actionbar Following disabled"
+        }
+      },
+      "custom:toggle_passive": {
+        "condition": "query.is_owner_identifier",
+        "add": {
+          "component_groups": ["passive_mode"]
+        },
+        "remove": {
+          "component_groups": ["follow_mode", "attack_mode"]
+        },
+        "run_command": {
+          "command": "title @s actionbar Passive mode enabled"
+        }
+      },
+      "custom:heal_with_redstone": {
+        "condition": "query.is_owner_identifier",
+        "trigger": {
+          "on_item_use": "minecraft:redstone"
+        },
+        "damage": {
+          "type": "healing",
+          "amount": 10
+        },
+        "run_command": {
+          "command": "title @s actionbar Archer Golem healed!"
         }
       }
     },
@@ -144,12 +215,78 @@
         }
       },
       "tamed": {
+        "minecraft:behavior.ranged_attack": {
+          "speed_multiplier": 0.5,
+          "attack_radius": 32,
+          "attack_radius_vertical": 32,
+          "targeting_conditions": [
+            {
+              "test": "is_family",
+              "subject": "target",
+              "value": "hostile"
+            }
+          ]
+        },
+        "minecraft:owners": []
+      },
+      "follow_mode": {
         "minecraft:behavior.follow_owner": {
           "speed_multiplier": 1.0,
           "start_distance": 10,
           "stop_distance": 2
         },
-        "minecraft:owners": []
+        "minecraft:behavior.ranged_attack": {
+          "speed_multiplier": 0.5,
+          "attack_radius": 32,
+          "attack_radius_vertical": 32,
+          "targeting_conditions": [
+            {
+              "test": "is_family",
+              "subject": "target",
+              "value": "hostile"
+            }
+          ]
+        }
+      },
+      "idle_mode": {
+        "minecraft:behavior.random_stroll": {
+          "speed_multiplier": 0.3,
+          "xz_dist": 5,
+          "y_dist": 3
+        },
+        "minecraft:behavior.ranged_attack": {
+          "speed_multiplier": 0.5,
+          "attack_radius": 32,
+          "attack_radius_vertical": 32,
+          "targeting_conditions": [
+            {
+              "test": "is_family",
+              "subject": "target",
+              "value": "hostile"
+            }
+          ]
+        }
+      },
+      "passive_mode": {
+        "minecraft:behavior.random_stroll": {
+          "speed_multiplier": 0.2,
+          "xz_dist": 3,
+          "y_dist": 2
+        }
+      },
+      "attack_mode": {
+        "minecraft:behavior.ranged_attack": {
+          "speed_multiplier": 0.5,
+          "attack_radius": 32,
+          "attack_radius_vertical": 32,
+          "targeting_conditions": [
+            {
+              "test": "is_family",
+              "subject": "target",
+              "value": "hostile"
+            }
+          ]
+        }
       }
     }
   }
