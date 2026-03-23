@@ -28,11 +28,81 @@ const CONFIG = {
   ADJACENT_FACES: ["up", "down", "north", "south", "east", "west"],
   CLIPPERS_ID: "custom:clippers",
   CLIPPERS_DURABILITY_COST: 2,
-  APPLE_ITEM_ID: "custom:apple_growth"
+  APPLE_ITEM_ID: "custom:apple_growth",
+  // Fortune and yield configuration
+  FORTUNE_ITEM_ID: "minecraft:fortune",
+  BASE_APPLE_YIELD: 1,
+  CLIPPERS_MIN_YIELD: 1,
+  CLIPPERS_MAX_YIELD: 3,
+  CLIPPERS_YIELD_CHANCE: 0.5, // 50% chance per apple for extra yields (like sheep)
+  // Enchantment handling
+  FORTUNE_LEVEL_1_MULTIPLIER: 2,
+  FORTUNE_LEVEL_2_MULTIPLIER: 3,
+  FORTUNE_LEVEL_3_MULTIPLIER: 4
 };
 
 // Track apple blocks and their spread timers
 const appleTracking = new Map();
+
+/**
+ * Get enchantment level from an item
+ */
+function getEnchantmentLevel(item, enchantmentId) {
+  try {
+    if (!item) return 0;
+    
+    const enchantable = item.getComponent("minecraft:enchantable");
+    if (!enchantable || !enchantable.enchantments) {
+      return 0;
+    }
+    
+    const enchantments = enchantable.enchantments;
+    for (const enchantment of enchantments) {
+      if (enchantment.type.id === enchantmentId) {
+        return enchantment.level || 0;
+      }
+    }
+    return 0;
+  } catch (e) {
+    console.warn(`[Apple Growth] Failed to get enchantment level: ${e.message}`);
+    return 0;
+  }
+}
+
+/**
+ * Calculate yield based on fortune level
+ */
+function calculateFortuneYield(baseYield, fortuneLevel) {
+  if (fortuneLevel === 0) {
+    return baseYield;
+  } else if (fortuneLevel === 1) {
+    return Math.floor(baseYield * CONFIG.FORTUNE_LEVEL_1_MULTIPLIER);
+  } else if (fortuneLevel === 2) {
+    return Math.floor(baseYield * CONFIG.FORTUNE_LEVEL_2_MULTIPLIER);
+  } else if (fortuneLevel >= 3) {
+    return Math.floor(baseYield * CONFIG.FORTUNE_LEVEL_3_MULTIPLIER);
+  }
+  return baseYield;
+}
+
+/**
+ * Calculate clippers harvest yield (1-3 apples)
+ */
+function calculateClippersYield() {
+  let appleCount = CONFIG.CLIPPERS_MIN_YIELD;
+  
+  // 50% chance for +1 apple (up to 2)
+  if (Math.random() < CONFIG.CLIPPERS_YIELD_CHANCE && appleCount < 2) {
+    appleCount++;
+  }
+  
+  // 50% chance for +1 more apple (up to 3)
+  if (Math.random() < CONFIG.CLIPPERS_YIELD_CHANCE && appleCount < CONFIG.CLIPPERS_MAX_YIELD) {
+    appleCount++;
+  }
+  
+  return appleCount;
+}
 
 /**
  * Get light level at a position
@@ -162,8 +232,9 @@ function initializeApple(block, dimension) {
 
 /**
  * Harvest apple from a position - returns the apple as an item
+ * Supports fortune enchantment for increased yield
  */
-function harvestApple(dimension, position) {
+function harvestApple(dimension, position, tool = null) {
   try {
     const block = dimension.getBlock(position);
     
@@ -171,8 +242,15 @@ function harvestApple(dimension, position) {
       return null;
     }
     
+    // Calculate yield based on fortune enchantment
+    let appleYield = CONFIG.BASE_APPLE_YIELD;
+    if (tool) {
+      const fortuneLevel = getEnchantmentLevel(tool, "minecraft:fortune");
+      appleYield = calculateFortuneYield(CONFIG.BASE_APPLE_YIELD, fortuneLevel);
+    }
+    
     // Spawn apple item at block position
-    const appleItem = new ItemStack(CONFIG.APPLE_ITEM_ID, 1);
+    const appleItem = new ItemStack(CONFIG.APPLE_ITEM_ID, appleYield);
     dimension.spawnItem(appleItem, position);
     
     // Remove the apple block
@@ -192,6 +270,7 @@ function harvestApple(dimension, position) {
 /**
  * Handle player interaction with clippers on apples
  * Non-destructive harvesting that keeps the leaf block intact
+ * Can yield 1-3 apples with fortune support
  */
 function harvestWithClippers(player, block) {
   try {
@@ -215,10 +294,21 @@ function harvestWithClippers(player, block) {
     
     const dimension = player.dimension;
     
-    // Harvest the apple
-    const apple = harvestApple(dimension, block.location);
+    // Calculate apple yield (1-3 apples like sheep)
+    const appleCount = calculateClippersYield();
     
-    if (apple) {
+    try {
+      // Harvest the apples
+      const appleItem = new ItemStack(CONFIG.APPLE_ITEM_ID, appleCount);
+      dimension.spawnItem(appleItem, block.location);
+      
+      // Remove the apple block (leaf remains intact)
+      dimension.setBlockType(block.location, "minecraft:air");
+      
+      // Remove tracking
+      const key = `${block.location.x},${block.location.y},${block.location.z}`;
+      appleTracking.delete(key);
+      
       // Damage clippers
       if (heldItem.getComponent("minecraft:durability")) {
         const durability = heldItem.getComponent("minecraft:durability");
@@ -235,11 +325,12 @@ function harvestWithClippers(player, block) {
       
       // Particle feedback
       dimension.spawnParticle(CONFIG.PARTICLE_HARVEST, block.location, { x: 0.3, y: 0.3, z: 0.3 });
-      player.onScreenDisplay.setActionBar("§aApple harvested with clippers");
+      player.onScreenDisplay.setActionBar(`§aHarvested ${appleCount} apples with clippers`);
       return true;
+    } catch (e) {
+      console.error(`[Apple Growth] Clippers harvest placement failed: ${e.message}`);
+      return false;
     }
-    
-    return false;
   } catch (e) {
     console.error(`[Apple Growth] Clippers harvest failed: ${e.message}`);
     return false;
@@ -300,17 +391,18 @@ world.afterEvents.blockPlace.subscribe((event) => {
  * Listen for block destruction events
  */
 world.afterEvents.blockBreak.subscribe((event) => {
-  const { block, brokenBlockPermutation, dimension } = event;
+  const { block, brokenBlockPermutation, dimension, player } = event;
   
   // Check if broken block was an apple or had an apple on it
   if (brokenBlockPermutation && brokenBlockPermutation.type.id === CONFIG.BLOCK_ID) {
     const key = `${block.location.x},${block.location.y},${block.location.z}`;
     appleTracking.delete(key);
     
-    // Drop apple item
-    if (dimension) {
-      const appleItem = new ItemStack(CONFIG.APPLE_ITEM_ID, 1);
-      dimension.spawnItem(appleItem, block.location);
+    // Drop apple item with fortune calculation if player used a tool
+    if (dimension && player) {
+      const inventory = player.getComponent("minecraft:inventory");
+      const tool = inventory ? inventory.container.getItem(player.selectedSlotIndex) : null;
+      harvestApple(dimension, block.location, tool);
     }
   }
 });

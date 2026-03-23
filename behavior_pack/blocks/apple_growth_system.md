@@ -94,11 +94,23 @@ Modify these constants in `apple_growth.js`:
 ```javascript
 const CONFIG = {
   BLOCK_ID: "custom:apple_on_leaves",
-  COMPATIBLE_LEAVES: [...],      // Leaf block types
-  SPREAD_INTERVAL: 6000,         // Ticks between spread attempts
-  SPREAD_CHANCE: 0.25,           // Probability of successful spread
-  MIN_LIGHT_LEVEL: 9,            // Crop growth light requirement
-  PARTICLE_SPREAD: "...",        // Particle effect on spread
+  COMPATIBLE_LEAVES: [...],           // Leaf block types
+  SPREAD_INTERVAL: 6000,              // Ticks between spread attempts
+  SPREAD_CHANCE: 0.25,                // Probability of successful spread
+  MIN_LIGHT_LEVEL: 9,                 // Crop growth light requirement
+  PARTICLE_SPREAD: "...",             // Particle effect on spread
+  CLIPPERS_ID: "custom:clippers",     // Clippers tool item
+  CLIPPERS_DURABILITY_COST: 2,        // Durability per harvest
+  APPLE_ITEM_ID: "custom:apple_growth",
+  // Fortune support
+  BASE_APPLE_YIELD: 1,                // Base yield (1 apple)
+  CLIPPERS_MIN_YIELD: 1,              // Clippers minimum (1 apple)
+  CLIPPERS_MAX_YIELD: 3,              // Clippers maximum (3 apples)
+  CLIPPERS_YIELD_CHANCE: 0.5,         // 50% per bonus apple
+  // Fortune multipliers
+  FORTUNE_LEVEL_1_MULTIPLIER: 2,      // Fortune I = 2x yield
+  FORTUNE_LEVEL_2_MULTIPLIER: 3,      // Fortune II = 3x yield
+  FORTUNE_LEVEL_3_MULTIPLIER: 4,      // Fortune III = 4x yield
 };
 ```
 
@@ -147,18 +159,29 @@ const CONFIG = {
 
 ### Destructive Harvesting (Breaking Leaf Block)
 - Break the leaf block containing the apple
-- Returns 1 apple item
+- Returns 1-4 apples depending on **Fortune enchantment**
 - Leaf block is destroyed
 - Apple block tracking is cleaned up
+
+**Fortune Yields:**
+- No Fortune: 1 apple
+- Fortune I: 2 apples
+- Fortune II: 3 apples
+- Fortune III: 4 apples
 
 ### Non-Destructive Harvesting (Clippers)
 - Hold **Clippers** item
 - Right-click on apple block
-- Returns 1 apple item
+- Returns 1-3 apples randomly (like sheep drops)
 - **Leaf block remains intact**
 - Clippers durability decreases by 2 per harvest
 - Uses 128 durability (64 harvests per tool)
 - Repairable with iron ingots
+
+**Clippers Yield Chances:**
+- 1 apple: 25% (no bonuses)
+- 2 apples: 50% (one bonus triggers)
+- 3 apples: 25% (both bonuses trigger)
 
 ### Item Drops
 
@@ -166,6 +189,7 @@ When apples are harvested:
 - Drops as stackable item (max 64)
 - Can be used to replant apples on new leaves
 - Participates in standard item physics (falling, collection)
+- Fortune support works with any fortune-enchanted tool
 
 **TODO:** Implement crafting recipes for clippers
 - Suggested recipe: Iron bars + Iron ingots in cross pattern
@@ -191,11 +215,16 @@ When apples are harvested:
 - [ ] Apple spreads to adjacent leaves at ~5 min intervals
 - [ ] Spread requires light level 9+
 - [ ] Spread stops when surrounded by non-leaf blocks
-- [ ] **NEW:** Breaking leaf block with apple destroys both and drops apple item
-- [ ] **NEW:** Clippers can harvest apple without breaking leaf block
-- [ ] **NEW:** Clippers durability decreases by 2 per harvest
-- [ ] **NEW:** Clippers can be repaired with iron ingots
-- [ ] **NEW:** Clippers break after 64 harvests (128 durability total)
+- [ ] **NEW:** Fortune I increases break yield to 2 apples
+- [ ] **NEW:** Fortune II increases break yield to 3 apples
+- [ ] **NEW:** Fortune III increases break yield to 4 apples
+- [ ] **NEW:** Clippers yield averages 1-3 apples
+- [ ] **NEW:** Clippers yield follows sheep drop pattern (25%, 50%, 25%)
+- [ ] Breaking leaf block with apple destroys both and drops with fortune
+- [ ] Clippers can harvest apple without breaking leaf block
+- [ ] Clippers durability decreases by 2 per harvest
+- [ ] Clippers can be repaired with iron ingots
+- [ ] Clippers break after 64 harvests (128 durability total)
 - [ ] Apples persist after chunk reload
 - [ ] Multiple apple blocks spread independently
 - [ ] Particles display on successful spread
