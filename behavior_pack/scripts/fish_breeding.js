@@ -14,7 +14,17 @@ const CONFIG = {
     "minecraft:pufferfish"
   ],
   OCTOPUS_ID: "minecraft:axolotl",  // Closest equivalent to octopus
+  GLOWING_OCTOPUS_ID: "custom:glowing_octopus",
+  OCTOPUS_TYPES: ["minecraft:axolotl", "custom:glowing_octopus"],
   BREEDING_ITEM: "minecraft:kelp",
+  OCTOPUS_BREEDING_ITEMS: [
+    "minecraft:cod",
+    "minecraft:salmon",
+    "minecraft:tropical_fish",
+    "minecraft:pufferfish",
+    "minecraft:cooked_cod",
+    "minecraft:cooked_salmon"
+  ],
   BABY_COOLDOWN: 5 * 60 * 20,  // 5 minutes in ticks (1 tick = 50ms)
   BREED_SUCCESS_CHANCE: 0.5,    // 50% chance to breed
   PARTICLES: "minecraft:happy_villager",
@@ -29,7 +39,7 @@ const fishInLove = new Map(); // key: entityId -> { timestamp, partnerId }
  * Check if entity is a breedable fish
  */
 function isFish(entity) {
-  return CONFIG.FISH_TYPES.includes(entity.typeId) || entity.typeId === CONFIG.OCTOPUS_ID;
+  return CONFIG.FISH_TYPES.includes(entity.typeId) || CONFIG.OCTOPUS_TYPES.includes(entity.typeId);
 }
 
 /**
@@ -172,10 +182,16 @@ function breedFish(fish1, fish2) {
         // If octopus is involved, spawn baby octopus
         // Otherwise spawn baby of first parent's type
         let babySpecies = fish1.typeId;
-        if (fish1.typeId === CONFIG.OCTOPUS_ID) {
-          babySpecies = CONFIG.OCTOPUS_ID;
-        } else if (fish2.typeId === CONFIG.OCTOPUS_ID) {
-          babySpecies = CONFIG.OCTOPUS_ID;
+        const isFirstOctopus = CONFIG.OCTOPUS_TYPES.includes(fish1.typeId);
+        const isSecondOctopus = CONFIG.OCTOPUS_TYPES.includes(fish2.typeId);
+
+        if (isFirstOctopus || isSecondOctopus) {
+          // Prioritize glowing if either parent is glowing
+          if (fish1.typeId === CONFIG.GLOWING_OCTOPUS_ID || fish2.typeId === CONFIG.GLOWING_OCTOPUS_ID) {
+            babySpecies = CONFIG.GLOWING_OCTOPUS_ID;
+          } else {
+            babySpecies = CONFIG.OCTOPUS_ID;
+          }
         }
     
     
@@ -233,19 +249,29 @@ world.afterEvents.playerInteractWithEntity.subscribe((event) => {
   }
   
   const container = inventory.container;
-  let hasKelp = false;
-  let kelpSlot = -1;
+  let hasBreedingItem = false;
+  let breedingSlot = -1;
+  let isOctopusFood = false;
   
   for (let i = 0; i < container.size; i++) {
     const item = container.getItem(i);
-    if (item && item.typeId === CONFIG.BREEDING_ITEM) {
-      hasKelp = true;
-      kelpSlot = i;
+    if (!item) continue;
+
+    if (CONFIG.OCTOPUS_TYPES.includes(target.typeId) && CONFIG.OCTOPUS_BREEDING_ITEMS.includes(item.typeId)) {
+      hasBreedingItem = true;
+      breedingSlot = i;
+      isOctopusFood = true;
+      break;
+    }
+
+    if (target.typeId !== CONFIG.OCTOPUS_ID && item.typeId === CONFIG.BREEDING_ITEM) {
+      hasBreedingItem = true;
+      breedingSlot = i;
       break;
     }
   }
   
-  if (!hasKelp) {
+  if (!hasBreedingItem) {
     return;
   }
   
@@ -264,16 +290,20 @@ world.afterEvents.playerInteractWithEntity.subscribe((event) => {
   // Put fish in love mode
   putFishInLove(target);
   
-  // Consume kelp
-  const kelpItem = container.getItem(kelpSlot);
-  kelpItem.amount--;
-  if (kelpItem.amount <= 0) {
-    container.setItem(kelpSlot, undefined);
+  // Consume breeding item
+  const breedingItem = container.getItem(breedingSlot);
+  breedingItem.amount--;
+  if (breedingItem.amount <= 0) {
+    container.setItem(breedingSlot, undefined);
   } else {
-    container.setItem(kelpSlot, kelpItem);
+    container.setItem(breedingSlot, breedingItem);
   }
   
-  player.onScreenDisplay.setActionBar(`§b${target.typeId.split(":")[1]} is in love mode!`);
+  if (CONFIG.OCTOPUS_TYPES.includes(target.typeId) && isOctopusFood) {
+    player.onScreenDisplay.setActionBar("§bOctopus is in love mode (fed fish)!");
+  } else {
+    player.onScreenDisplay.setActionBar(`§b${target.typeId.split(":")[1]} is in love mode!`);
+  }
   console.warn(`[Fish Breeding] Put ${target.typeId} in love mode`);
 });
 
@@ -312,28 +342,28 @@ system.runInterval(() => {
           }
         } catch (e) {
           // Continue to next fish type
-      
-              // Also check octopus
-              try {
-                const octopi = dimension.getEntities({
-                  type: CONFIG.OCTOPUS_ID,
-                  maxDistance: 128
-                });
-        
-                for (const octopus of octopi) {
-                  if (isInLove(octopus)) {
-                    const matesNearby = getNearbyLoveFish(octopus);
-            
-                    if (matesNearby.length > 0) {
-                      const mate = matesNearby[0];
-                      breedFish(octopus, mate);
-                    }
-                  }
-                }
-              } catch (e) {
-                // Octopus check failed
-              }
         }
+      }
+
+      // Also check octopus outside fish-type loop
+      try {
+        const octopi = dimension.getEntities({
+          type: CONFIG.OCTOPUS_ID,
+          maxDistance: 128
+        });
+
+        for (const octopus of octopi) {
+          if (isInLove(octopus)) {
+            const matesNearby = getNearbyLoveFish(octopus);
+
+            if (matesNearby.length > 0) {
+              const mate = matesNearby[0];
+              breedFish(octopus, mate);
+            }
+          }
+        }
+      } catch (e) {
+        // Octopus check failed
       }
     }
   } catch (e) {

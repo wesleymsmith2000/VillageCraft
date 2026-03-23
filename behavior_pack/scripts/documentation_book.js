@@ -123,6 +123,8 @@ SUPPORTED FISH:
 > Tropical Fish
 > Pufferfish
 > Octopus (Axolotl)
+> Glowing Octopus (custom)
+> Octopus (Axolotl)
 
 BREEDING:
 1. Find adult fish
@@ -135,6 +137,7 @@ BREEDING:
 
 SPECIAL: Octopus can breed with ANY fish type!
 Result: Always spawns baby octopus
+Glowing variant: Any pairing with glowing octopus produces baby glowing octopus.
 
 EXAMPLE: Octopus + Salmon = Baby Octopus
 
