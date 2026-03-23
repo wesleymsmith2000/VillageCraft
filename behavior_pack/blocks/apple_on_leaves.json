@@ -1,0 +1,66 @@
+{
+  "format_version": "1.20.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "custom:apple_on_leaves",
+      "is_experimental": false,
+      "menu_category": {
+        "category": "nature"
+      }
+    },
+    "components": {
+      "minecraft:destroy_time": 0.2,
+      "minecraft:explosion_resistance": 0,
+      "minecraft:friction": 0.6,
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "apple_on_leaves"
+        }
+      },
+      "minecraft:geometry": "geometry.apple_on_leaves",
+      "minecraft:light_dampening": 0,
+      "minecraft:map_color": "#c1440c",
+      "minecraft:placement_filter": {
+        "conditions": [
+          {
+            "allowed_faces": ["up", "down", "north", "south", "east", "west"],
+            "block_filter": [
+              "minecraft:oak_leaves",
+              "minecraft:birch_leaves",
+              "minecraft:dark_oak_leaves"
+            ]
+          }
+        ]
+      },
+      "minecraft:rotation": [0, 0, 0],
+      "minecraft:crafting_table": {
+        "crafting_tags": ["planks_logs"]
+      },
+      "minecraft:custom_components": {}
+    },
+    "events": {
+      "custom:spread_attempt": {
+        "sequence": [
+          {
+            "randomize": [
+              {
+                "weight": 1,
+                "trigger": "custom:on_spread_success"
+              },
+              {
+                "weight": 3,
+                "trigger": "custom:on_spread_fail"
+              }
+            ]
+          }
+        ]
+      },
+      "custom:on_spread_success": {
+        "run_command": {
+          "command": "particle minecraft:redstone_ore_dust ~ ~ ~"
+        }
+      },
+      "custom:on_spread_fail": {}
+    }
+  }
+}

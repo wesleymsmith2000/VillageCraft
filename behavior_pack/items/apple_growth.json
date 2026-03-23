@@ -1,0 +1,21 @@
+{
+  "format_version": "1.20.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "custom:apple_growth",
+      "category": "nature"
+    },
+    "components": {
+      "minecraft:max_stack_size": 64,
+      "minecraft:fuel": {
+        "duration": 0.5
+      },
+      "minecraft:icon": {
+        "texture": "textures/items/apple"
+      },
+      "minecraft:display_name": {
+        "value": "Growth Apple"
+      }
+    }
+  }
+}
