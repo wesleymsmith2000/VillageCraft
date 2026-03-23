@@ -146,6 +146,33 @@ SUCCESS: 50% chance per pairing
 BABY: Takes time to grow to adult
 RANGE: Fish find mates within 8 blocks
 
+=== HANGING LADDER ===
+
+Vertical climbing with chain support system.
+
+CRAFTING:
+8x Ladder around 1x Chain = 9x Hanging Ladder
+
+PLACEMENT:
+- Place on solid blocks like normal ladder
+- Can hang in chains (supported above/below)
+- Support: Any ladder or hanging ladder above/below
+
+EXTENDING:
+- Right-click top face: Add ladder above
+- Right-click bottom face: Add ladder below
+- Must hold hanging ladder in hand
+
+SUPPORT RULES:
+- Stays if attached to solid block
+- Stays if supported by ladder chain
+- Falls if unsupported (breaks chain)
+
+USES:
+- Vertical shafts
+- Hanging structures
+- Chain-supported climbing
+
 === QUICK TIPS ===
 
 FARMING SETUP:
