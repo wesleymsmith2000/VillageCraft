@@ -1,0 +1,23 @@
+{
+  "format_version": "1.19.50",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "custom:poison_tipped_arrows"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "AAA",
+      "APA",
+      "AMA"
+    ],
+    "key": {
+      "A": { "item": "minecraft:arrow" },
+      "P": { "item": "minecraft:pufferfish" },
+      "M": { "tag": "minecraft:mushrooms" }
+    },
+    "result": {
+      "item": "minecraft:tipped_arrow",
+      "count": 8
+    }
+  }
+}

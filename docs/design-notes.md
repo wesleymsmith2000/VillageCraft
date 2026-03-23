@@ -230,6 +230,13 @@ The fish breeding system allows regular fish to breed via kelp and enables octop
 - **Love mode**: 3-second window for finding mates.
 - **Rate control**: 50% chance to produce offspring each pairing.
 
+### New Crafting: Tipped Arrows
+
+Players can craft special tipped arrows using pufferfish + arrows plus a modifier item:
+ - **Any mushroom/fungus** + pufferfish + 7 arrows → 8 `minecraft:tipped_arrow` (poison level 1 style)
+ - **Slime ball** + pufferfish + 7 arrows → 8 `minecraft:tipped_arrow` (slowness style)
+ - **Lily of the valley** + pufferfish + 7 arrows → 8 `minecraft:tipped_arrow` (weakness style)
+
 ### TODO Items
 
 - [ ] Add dedicated octopus spawn egg / cosmetic (optional)

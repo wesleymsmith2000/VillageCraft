@@ -1,0 +1,23 @@
+{
+  "format_version": "1.19.50",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "custom:slowing_tipped_arrows"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "AAA",
+      "APA",
+      "ASA"
+    ],
+    "key": {
+      "A": { "item": "minecraft:arrow" },
+      "P": { "item": "minecraft:pufferfish" },
+      "S": { "item": "minecraft:slime_ball" }
+    },
+    "result": {
+      "item": "minecraft:tipped_arrow",
+      "count": 8
+    }
+  }
+}

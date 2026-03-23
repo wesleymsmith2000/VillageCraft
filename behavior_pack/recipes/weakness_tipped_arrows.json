@@ -1,0 +1,23 @@
+{
+  "format_version": "1.19.50",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "custom:weakness_tipped_arrows"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "AAA",
+      "APA",
+      "ALA"
+    ],
+    "key": {
+      "A": { "item": "minecraft:arrow" },
+      "P": { "item": "minecraft:pufferfish" },
+      "L": { "item": "minecraft:lily_of_the_valley" }
+    },
+    "result": {
+      "item": "minecraft:tipped_arrow",
+      "count": 8
+    }
+  }
+}

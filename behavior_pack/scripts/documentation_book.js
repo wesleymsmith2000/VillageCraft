@@ -149,6 +149,11 @@ BABY: Takes time to grow to adult
 RANGE: Fish find mates within 8 blocks
 TRAITS: Tropical fish offspring inherit one parent's visual traits (0.1% mutation chance)
 
+TIPPED ARROWS CRAFTING:
+- Pufferfish + 7 Arrows + Mushroom/Fungus → Poison Tipped Arrows (8)
+- Pufferfish + 7 Arrows + Slime Ball → Slowness Tipped Arrows (8)
+- Pufferfish + 7 Arrows + Lily of the Valley → Weakness Tipped Arrows (8)
+
 === HANGING LADDER ===
 
 Vertical climbing with chain support system.
