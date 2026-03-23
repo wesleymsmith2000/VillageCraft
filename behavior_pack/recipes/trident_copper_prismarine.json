@@ -1,0 +1,26 @@
+{
+  "format_version": "1.19.50",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "custom:trident_copper_prismarine"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "PP ",
+      " C ",
+      " C "
+    ],
+    "key": {
+      "P": {
+        "item": "minecraft:prismarine_shard"
+      },
+      "C": {
+        "item": "minecraft:copper_ingot"
+      }
+    },
+    "result": {
+      "item": "minecraft:trident",
+      "count": 1
+    }
+  }
+}
