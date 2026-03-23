@@ -95,6 +95,48 @@ ITEMS: Drop at dispenser position
 
 COMPATIBLE WITH: Hoppers for item routing
 
+=== WAYPOINTS ===
+Fast travel system between linked waypoints.
+
+SETUP:
+1. Place village waypoint blocks
+2. Link them together (bidirectional)
+3. Right-click to see destinations
+4. Teleport to linked waypoint
+
+SPECIAL: If in boat, boat + nearby entities teleport too!
+RANGE: Entities within 4 blocks auto-teleport
+SUPPORTS: All boat types with passengers
+
+USES:
+- Connect villages
+- Transport groups
+- Move mobs/cargo with boat
+- Quick travel network
+
+=== FISH BREEDING ===
+Breed fish with kelp to create baby fish.
+
+SUPPORTED FISH:
+> Cod
+> Salmon
+> Tropical Fish
+> Pufferfish
+
+BREEDING:
+1. Find adult fish
+2. Hold kelp in hand
+3. Right-click fish
+4. Fish enters love mode (3 seconds)
+5. Get 2+ fish in love mode nearby
+6. They breed, spawn baby fish
+7. Consume 1 kelp per fish
+
+LOVE MODE: 3 seconds to find mate
+SUCCESS: 50% chance per pairing
+BABY: Takes time to grow to adult
+RANGE: Fish find mates within 8 blocks
+
 === QUICK TIPS ===
 
 FARMING SETUP:
@@ -115,12 +157,20 @@ GOLEM ARMY:
 3. Use Idle to hold positions
 4. Heal with redstone as needed
 
+FISH FARMING:
+1. Catch fish in buckets
+2. Find/create water area
+3. Use kelp to breed them
+4. Wait for babies to grow
+
 === CONFIG & CUSTOMIZATION ===
 
 Crop Types: Modify CROPS config in clippers_harvesting.js
 Apple Spread: Adjust SPREAD_INTERVAL in apple_growth.js (6000 ticks)
 Irrigation: Change WATER_CONSUMPTION_INTERVAL (2400 ticks)
 Dispenser: Add new crops to CONFIG in dispenser_clippers.js
+Fish Breeding: Adjust BREED_SUCCESS_CHANCE (0.5 = 50%)
+Waypoints: Change ENTITY_TELEPORT_RANGE (4 blocks)
 
 === KNOWN LIMITATIONS ===
 
@@ -128,12 +178,13 @@ Dispenser: Add new crops to CONFIG in dispenser_clippers.js
 - Light level detection placeholder (API verification needed)
 - Cauldron water level decrease placeholder (API pending)
 - Golem ownership verification not implemented (shared taming)
+- Fish breeding uses 50% success rate (not guaranteed)
 
 === FUTURE PLANS ===
 
 - Architect & Builder villagers
 - Blueprint block system
-- Village waypoint system
+- Village waypoint UI forms
 - More golem variants
 - Crafting recipes
 
