@@ -16,7 +16,7 @@
       "M": { "tag": "minecraft:mushrooms" }
     },
     "result": {
-      "item": "minecraft:tipped_arrow",
+      "item": "minecraft:poison_tipped_arrow",
       "count": 8
     }
   }

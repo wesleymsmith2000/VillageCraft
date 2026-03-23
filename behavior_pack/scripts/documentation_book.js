@@ -153,6 +153,7 @@ TIPPED ARROWS CRAFTING:
 - Pufferfish + 7 Arrows + Mushroom/Fungus → Poison Tipped Arrows (8)
 - Pufferfish + 7 Arrows + Slime Ball → Slowness Tipped Arrows (8)
 - Pufferfish + 7 Arrows + Lily of the Valley → Weakness Tipped Arrows (8)
+ (generates built-in minecraft:poison_tipped_arrow, minecraft:slowness_tipped_arrow, minecraft:weakness_tipped_arrow)
 
 === HANGING LADDER ===
 

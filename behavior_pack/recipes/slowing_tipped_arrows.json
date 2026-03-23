@@ -16,7 +16,7 @@
       "S": { "item": "minecraft:slime_ball" }
     },
     "result": {
-      "item": "minecraft:tipped_arrow",
+      "item": "minecraft:slowness_tipped_arrow",
       "count": 8
     }
   }

@@ -236,6 +236,7 @@ Players can craft special tipped arrows using pufferfish + arrows plus a modifie
  - **Any mushroom/fungus** + pufferfish + 7 arrows → 8 `minecraft:tipped_arrow` (poison level 1 style)
  - **Slime ball** + pufferfish + 7 arrows → 8 `minecraft:tipped_arrow` (slowness style)
  - **Lily of the valley** + pufferfish + 7 arrows → 8 `minecraft:tipped_arrow` (weakness style)
+ (in practice creates `minecraft:poison_tipped_arrow`, `minecraft:slowness_tipped_arrow`, `minecraft:weakness_tipped_arrow`)
 
 ### TODO Items
 

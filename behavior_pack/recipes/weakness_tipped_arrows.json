@@ -16,7 +16,7 @@
       "L": { "item": "minecraft:lily_of_the_valley" }
     },
     "result": {
-      "item": "minecraft:tipped_arrow",
+      "item": "minecraft:weakness_tipped_arrow",
       "count": 8
     }
   }
