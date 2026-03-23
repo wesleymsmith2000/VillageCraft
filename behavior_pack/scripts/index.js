@@ -4,6 +4,7 @@
  */
 
 // Import all system modules
+import "./documentation_book.js";
 import "./archer_golem_interactions.js";
 import "./apple_growth.js";
 import "./irrigation_system.js";
