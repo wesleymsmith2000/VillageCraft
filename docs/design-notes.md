@@ -133,52 +133,85 @@ Else:
 
 ## 5. Village Waypoint Block & UI
 
-The **Village Waypoint Block** serves as a navigation marker and information hub for villages. It provides a custom UI for accessing village services, viewing waypoints, and coordinating with custom villagers.
+The **Village Waypoint Block** serves as a navigation marker and fast-travel hub for villages. It provides teleportation between linked waypoints with a crucial feature: **if the player is in a boat, the boat and all nearby entities within 4 blocks are teleported together**, making it ideal for group transport, mob relocation, and vehicle travel.
 
 ### Implementation Notes
 
-- **Block Type**: Custom block (e.g., `custom:village_waypoint`)
-- **Block Entity**: Stores waypoint data, linked services, and metadata
-- **UI System**: Uses `minecraft:ui` form system for player interaction
-- **Rendering**: Custom render controller and texture for visual identification
+- **Block Type**: Custom block (`custom:village_waypoint`)
+- **Teleportation**: Bidirectional linking between waypoints with 500ms cooldown
+- **Boat Support**: Full boat and passenger teleportation (all boat types)
+- **Entity Grouping**: All entities within 4 blocks auto-teleport with player
+- **Visual Feedback**: Portal particles at source and destination, block glows (light level 8)
+- **Registration**: Auto-registers on placement, supports manual registration
+
+### Features Implemented
+
+✅ Waypoint block definition with blue glow  
+✅ Auto-registration on placement  
+✅ Bidirectional waypoint linking  
+✅ Player teleportation with boat support  
+✅ Boat passenger preservation during teleport  
+✅ Nearby entity grouping (4-block radius)  
+✅ Portal particle effects  
+✅ Cooldown protection (500ms)  
+✅ Entity type detection (supports all boat variants)  
+✅ Comprehensive documentation with examples  
 
 ### TODO Items
 
-- [ ] Verify custom block entity data persistence in current Bedrock version
-- [ ] Determine UI form API capabilities (buttons, toggles, text input)
-- [ ] Implement block entity NBT schema for waypoint metadata
-- [ ] Define network protocol if multiplayer waypoint sync is required
-- [ ] Create render controller for waypoint visual states (active, inactive, linked)
-- [ ] Verify custom block collision and interaction ranges
+- [ ] Implement form-based UI for waypoint selection (replace chat menu)
+- [ ] Add custom waypoint naming system (with commands)
+- [ ] Implement network sync for multiplayer waypoint coordination
+- [ ] Create permission system for access control
+- [ ] Add teleport sound effects (currently placeholder)
+- [ ] Implement spatial indexing for 50+ waypoint optimization
+- [ ] Add waypoint data persistence (block entity NBT)
+- [ ] Create waypoint visualization/map system
 
-### Waypoint UI Features
+### Boat Teleportation Example
+
+```javascript
+// Player in boat with 2 passengers approaches waypoint
+boat.addPassenger(player);          // Player riding
+boat.addPassenger(villager);        // Passenger 1
+boat.addPassenger(archer_golem);    // Passenger 2
+
+// Player interacts with waypoint
+// Result: All teleported together to destination
+// boat.addPassenger(player);        // Re-mounted
+// boat.addPassenger(villager);      // Still aboard
+// boat.addPassenger(archer_golem);  // Still aboard
+```
+
+### Entity Grouping Example
 
 ```
-Primary Interface:
-  - Village Info (name, population, mood)
-  - Linked Services (builder, architect, archer golem)
-  - Nearby Waypoints Map
-  - Fast Travel Option (if supported)
+Player at waypoint center (within 4-block radius):
+- Boat with 3 passengers (2 blocks away)
+- Dropped items (1 block away)
+- Armor stand display (3 blocks away)
+- Wandering merchant (4 blocks away)
 
-Secondary Menu:
-  - Waypoint Configuration (name, description)
-  - Service Settings (trade rates, golem behavior)
-  - Village Statistics
+Result: All 7 entities (player + 6 nearby) teleport together
+Preserves formation and relationships
 ```
 
-### Waypoint Block Data Structure Example
+### Waypoint Network Design
 
-```json
-{
-  "waypoint_id": "village_main_1",
-  "village_id": "village_1",
-  "position": { "x": 100, "y": 64, "z": 200 },
-  "name": "Market Square",
-  "description": "Central trading hub",
-  "linked_services": ["builder_villager", "archer_golem"],
-  "nearby_waypoints": [],
-  "ui_form_id": "village_waypoint_main"
-}
+Simple hub:
+```
+    Market Hub (central)
+        |
+    ┌───┼───┐
+    |   |   |
+  Farm Nether Mine
+```
+
+Complex network:
+```
+Village A ←→ Central Hub ←→ Village B
+    ↓            |            ↓
+  Farm       Waypoint      Trading Post
 ```
 
 ---

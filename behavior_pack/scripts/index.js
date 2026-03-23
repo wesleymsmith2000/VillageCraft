@@ -10,5 +10,6 @@ import "./apple_growth.js";
 import "./irrigation_system.js";
 import "./clippers_harvesting.js";
 import "./dispenser_clippers.js";
+import "./waypoint_system.js";
 
 console.warn("[VillageCraft] All systems initialized successfully");

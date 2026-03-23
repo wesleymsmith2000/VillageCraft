@@ -1,0 +1,25 @@
+Village Waypoint Block Texture
+
+A royal blue glowing block for fast travel waypoints.
+
+Current: Placeholder texture
+TODO: Create 16x16 texture with:
+- Royal blue base color (#4169E1)
+- Portal-like glow pattern
+- Waypoint marker symbol (crosshair, arrow, or star)
+- Animated glow (optional, uses render controller)
+
+Texture file will be placed at:
+resource_pack/textures/blocks/village_waypoint.png
+
+Features to implement:
+- Alpha channel for glow edges
+- Emissive overlay for light emission (8)
+- Multiple texture variants for linked/unlinked states
+- Animated frames for continuous glow effect (via animation controller)
+
+Design inspiration:
+- Minecraft beacon block (glowing, magical)
+- Portal block (travel aesthetic)
+- Conduit block (glowing center)
+- Amethyst block (crystalline glow)
