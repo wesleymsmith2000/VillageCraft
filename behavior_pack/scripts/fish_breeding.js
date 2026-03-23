@@ -13,6 +13,7 @@ const CONFIG = {
     "minecraft:tropical_fish",
     "minecraft:pufferfish"
   ],
+  OCTOPUS_ID: "minecraft:axolotl",  // Closest equivalent to octopus
   BREEDING_ITEM: "minecraft:kelp",
   BABY_COOLDOWN: 5 * 60 * 20,  // 5 minutes in ticks (1 tick = 50ms)
   BREED_SUCCESS_CHANCE: 0.5,    // 50% chance to breed
@@ -28,7 +29,7 @@ const fishInLove = new Map(); // key: entityId -> { timestamp, partnerId }
  * Check if entity is a breedable fish
  */
 function isFish(entity) {
-  return CONFIG.FISH_TYPES.includes(entity.typeId);
+  return CONFIG.FISH_TYPES.includes(entity.typeId) || entity.typeId === CONFIG.OCTOPUS_ID;
 }
 
 /**
@@ -108,17 +109,32 @@ function isInLove(fish) {
 function getNearbyLoveFish(fish, searchRadius = 8) {
   try {
     const dimension = fish.dimension;
-    const nearbyEntities = dimension.getEntities({
+    // Get all entities (octopus can breed with any fish type)
+    const allNearby = dimension.getEntities({
       location: fish.location,
-      maxDistance: searchRadius,
-      type: fish.typeId
+      maxDistance: searchRadius
     });
     
     const loveFish = [];
-    for (const entity of nearbyEntities) {
+    for (const entity of allNearby) {
       // Skip self and already processed fish
       if (entity === fish || entity.id === fish.id) {
         continue;
+            // Check if entity is a fish or octopus
+            if (!isFish(entity)) {
+              continue;
+            }
+      
+            // Allow breeding if:
+            // 1. Both are same type (fish with fish), OR
+            // 2. One is octopus (octopus with any fish)
+            const sameType = entity.typeId === fish.typeId;
+            const hasOctopus = entity.typeId === CONFIG.OCTOPUS_ID || fish.typeId === CONFIG.OCTOPUS_ID;
+      
+            if (!sameType && !hasOctopus) {
+              continue;
+            }
+      
       }
       
       // Check if in love mode
@@ -152,10 +168,20 @@ function breedFish(fish1, fish2) {
     };
     
     const dimension = fish1.dimension;
+        // Determine what species to spawn
+        // If octopus is involved, spawn baby octopus
+        // Otherwise spawn baby of first parent's type
+        let babySpecies = fish1.typeId;
+        if (fish1.typeId === CONFIG.OCTOPUS_ID) {
+          babySpecies = CONFIG.OCTOPUS_ID;
+        } else if (fish2.typeId === CONFIG.OCTOPUS_ID) {
+          babySpecies = CONFIG.OCTOPUS_ID;
+        }
+    
     
     // Spawn baby fish (spawn as adult, age component makes it baby)
     try {
-      const baby = dimension.spawnEntity(fish1.typeId, midpoint);
+      const baby = dimension.spawnEntity(babySpecies, midpoint);
       
       // Set baby age
       const ageComponent = baby.getComponent("minecraft:age");
@@ -163,7 +189,8 @@ function breedFish(fish1, fish2) {
         ageComponent.age = -24000;  // Baby age (negative = child)
       }
       
-      console.warn(`[Fish Breeding] Spawned baby ${fish1.typeId}`);
+      const fishName = babySpecies.split(":")[1];
+      console.warn(`[Fish Breeding] Spawned baby ${fishName}`);
     } catch (e) {
       console.warn(`[Fish Breeding] Failed to spawn baby: ${e.message}`);
     }
@@ -285,6 +312,27 @@ system.runInterval(() => {
           }
         } catch (e) {
           // Continue to next fish type
+      
+              // Also check octopus
+              try {
+                const octopi = dimension.getEntities({
+                  type: CONFIG.OCTOPUS_ID,
+                  maxDistance: 128
+                });
+        
+                for (const octopus of octopi) {
+                  if (isInLove(octopus)) {
+                    const matesNearby = getNearbyLoveFish(octopus);
+            
+                    if (matesNearby.length > 0) {
+                      const mate = matesNearby[0];
+                      breedFish(octopus, mate);
+                    }
+                  }
+                }
+              } catch (e) {
+                // Octopus check failed
+              }
         }
       }
     }
@@ -297,3 +345,4 @@ console.warn("[Fish Breeding] System initialized");
 console.warn("[Fish Breeding] Supported fish: " + CONFIG.FISH_TYPES.join(", "));
 console.warn("[Fish Breeding] Breeding item: " + CONFIG.BREEDING_ITEM);
 console.warn("[Fish Breeding] Love duration: " + (CONFIG.LOVE_MODE_DURATION / 1000) + " seconds");
+console.warn("[Fish Breeding] Octopus (axolotl) can breed with any fish type");

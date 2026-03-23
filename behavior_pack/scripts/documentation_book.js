@@ -122,6 +122,7 @@ SUPPORTED FISH:
 > Salmon
 > Tropical Fish
 > Pufferfish
+> Octopus (Axolotl)
 
 BREEDING:
 1. Find adult fish
@@ -131,6 +132,11 @@ BREEDING:
 5. Get 2+ fish in love mode nearby
 6. They breed, spawn baby fish
 7. Consume 1 kelp per fish
+
+SPECIAL: Octopus can breed with ANY fish type!
+Result: Always spawns baby octopus
+
+EXAMPLE: Octopus + Salmon = Baby Octopus
 
 LOVE MODE: 3 seconds to find mate
 SUCCESS: 50% chance per pairing
