@@ -32,12 +32,13 @@ Apple Block Detection → Light Level Check → Adjacent Leaf Search → Random 
 
 **Items:**
 - `behavior_pack/items/apple_growth.json` - Growth apple item definition
+- `behavior_pack/items/clippers.json` - Clippers tool for non-destructive harvesting
 
 **Blocks:**
 - `behavior_pack/blocks/apple_on_leaves.json` - Apple block definition with placement filter
 
 **Scripts:**
-- `behavior_pack/scripts/apple_growth.js` - Core spreading and management logic
+- `behavior_pack/scripts/apple_growth.js` - Core spreading, management, and harvesting logic
 
 ### Resource Pack
 
@@ -113,20 +114,26 @@ const CONFIG = {
    - TODO: Model rotation based on attached face
    - TODO: Test all 6 face orientations
 
-3. **Persistence**
+3. **Clippers Tool**
+   - TODO: Create crafting recipe for clippers
+   - TODO: Implement enchantment support (Efficiency, Unbreaking)
+   - TODO: Add clippers texture and model
+   - TODO: Test durability system across sessions
+
+4. **Harvesting Events**
+   - TODO: Verify `playerInteractWithBlock` event reliability
+   - TODO: Test cancellation behavior for clippers harvest
+   - TODO: Handle edge cases (armor, accessories blocking interact)
+
+5. **Persistence**
    - TODO: Implement block scanning on world load
    - TODO: Store apple positions in NBT for persistence
    - TODO: Handle cross-dimension spreading (if applicable)
 
-4. **Performance**
+6. **Performance**
    - TODO: Optimize tracking for large-scale apple farms
    - TODO: Consider chunk-based spread limits
    - TODO: Profile memory usage with thousands of apples
-
-5. **Integration**
-   - TODO: Add crafting recipes for apple placement
-   - TODO: Create admin commands for apple farm setup
-   - TODO: Add growth visualization particles
 
 ## Usage
 
@@ -136,10 +143,33 @@ const CONFIG = {
 2. Right-click on a leaf block face
 3. Apple attaches and begins spreading cycle
 
-### Harvesting
+## Harvesting
 
-- Break apple block with any tool
-- Returns as item (stackable, max 64)
+### Destructive Harvesting (Breaking Leaf Block)
+- Break the leaf block containing the apple
+- Returns 1 apple item
+- Leaf block is destroyed
+- Apple block tracking is cleaned up
+
+### Non-Destructive Harvesting (Clippers)
+- Hold **Clippers** item
+- Right-click on apple block
+- Returns 1 apple item
+- **Leaf block remains intact**
+- Clippers durability decreases by 2 per harvest
+- Uses 128 durability (64 harvests per tool)
+- Repairable with iron ingots
+
+### Item Drops
+
+When apples are harvested:
+- Drops as stackable item (max 64)
+- Can be used to replant apples on new leaves
+- Participates in standard item physics (falling, collection)
+
+**TODO:** Implement crafting recipes for clippers
+- Suggested recipe: Iron bars + Iron ingots in cross pattern
+
 
 ### Controlling Spread
 
@@ -161,8 +191,14 @@ const CONFIG = {
 - [ ] Apple spreads to adjacent leaves at ~5 min intervals
 - [ ] Spread requires light level 9+
 - [ ] Spread stops when surrounded by non-leaf blocks
+- [ ] **NEW:** Breaking leaf block with apple destroys both and drops apple item
+- [ ] **NEW:** Clippers can harvest apple without breaking leaf block
+- [ ] **NEW:** Clippers durability decreases by 2 per harvest
+- [ ] **NEW:** Clippers can be repaired with iron ingots
+- [ ] **NEW:** Clippers break after 64 harvests (128 durability total)
 - [ ] Apples persist after chunk reload
 - [ ] Multiple apple blocks spread independently
 - [ ] Particles display on successful spread
+- [ ] Particle effects display on clippers harvest
 - [ ] Breaking apple removes tracking entry
 - [ ] Performance stable with 100+ apples

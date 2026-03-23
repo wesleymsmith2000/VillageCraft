@@ -7,9 +7,10 @@
  * - Apples spread to adjacent leaf blocks at ~5 minute intervals (twice per day)
  * - Spreading requires sufficient light (equivalent to crop growth light levels)
  * - Spreads only to matching leaf types or compatible adjacent leaves
+ * - Apples can be harvested by breaking the leaf block or using clippers (non-destructive)
  */
 
-import { world, system, BlockPermutation, Direction } from "@minecraft/server";
+import { world, system, BlockPermutation, Direction, ItemStack } from "@minecraft/server";
 
 // Configuration
 const CONFIG = {
@@ -23,7 +24,11 @@ const CONFIG = {
   SPREAD_CHANCE: 0.25, // 25% chance per attempt (1 in 4)
   MIN_LIGHT_LEVEL: 9, // Crop growth requires light level 9+
   PARTICLE_SPREAD: "minecraft:redstone_ore_dust",
-  ADJACENT_FACES: ["up", "down", "north", "south", "east", "west"]
+  PARTICLE_HARVEST: "minecraft:crop_dust",
+  ADJACENT_FACES: ["up", "down", "north", "south", "east", "west"],
+  CLIPPERS_ID: "custom:clippers",
+  CLIPPERS_DURABILITY_COST: 2,
+  APPLE_ITEM_ID: "custom:apple_growth"
 };
 
 // Track apple blocks and their spread timers
@@ -156,6 +161,92 @@ function initializeApple(block, dimension) {
 }
 
 /**
+ * Harvest apple from a position - returns the apple as an item
+ */
+function harvestApple(dimension, position) {
+  try {
+    const block = dimension.getBlock(position);
+    
+    if (!block || block.typeId !== CONFIG.BLOCK_ID) {
+      return null;
+    }
+    
+    // Spawn apple item at block position
+    const appleItem = new ItemStack(CONFIG.APPLE_ITEM_ID, 1);
+    dimension.spawnItem(appleItem, position);
+    
+    // Remove the apple block
+    dimension.setBlockType(position, "minecraft:air");
+    
+    // Remove tracking
+    const key = `${position.x},${position.y},${position.z}`;
+    appleTracking.delete(key);
+    
+    return appleItem;
+  } catch (e) {
+    console.error(`[Apple Growth] Harvest failed: ${e.message}`);
+    return null;
+  }
+}
+
+/**
+ * Handle player interaction with clippers on apples
+ * Non-destructive harvesting that keeps the leaf block intact
+ */
+function harvestWithClippers(player, block) {
+  try {
+    if (block.typeId !== CONFIG.BLOCK_ID) {
+      return false;
+    }
+    
+    // Get player's held item
+    const inventory = player.getComponent("minecraft:inventory");
+    if (!inventory) {
+      return false;
+    }
+    
+    const container = inventory.container;
+    const selectedSlot = player.selectedSlotIndex;
+    const heldItem = container.getItem(selectedSlot);
+    
+    if (!heldItem || heldItem.typeId !== CONFIG.CLIPPERS_ID) {
+      return false;
+    }
+    
+    const dimension = player.dimension;
+    
+    // Harvest the apple
+    const apple = harvestApple(dimension, block.location);
+    
+    if (apple) {
+      // Damage clippers
+      if (heldItem.getComponent("minecraft:durability")) {
+        const durability = heldItem.getComponent("minecraft:durability");
+        durability.damage += CONFIG.CLIPPERS_DURABILITY_COST;
+        
+        // If durability exceeded, remove item
+        if (durability.damage >= durability.maxDurability) {
+          container.setItem(selectedSlot, undefined);
+          player.onScreenDisplay.setActionBar("§cClippers broke!");
+        } else {
+          container.setItem(selectedSlot, heldItem);
+        }
+      }
+      
+      // Particle feedback
+      dimension.spawnParticle(CONFIG.PARTICLE_HARVEST, block.location, { x: 0.3, y: 0.3, z: 0.3 });
+      player.onScreenDisplay.setActionBar("§aApple harvested with clippers");
+      return true;
+    }
+    
+    return false;
+  } catch (e) {
+    console.error(`[Apple Growth] Clippers harvest failed: ${e.message}`);
+    return false;
+  }
+}
+
+/**
  * Main tick handler for apple spreading
  */
 function tickApples() {
@@ -209,11 +300,46 @@ world.afterEvents.blockPlace.subscribe((event) => {
  * Listen for block destruction events
  */
 world.afterEvents.blockBreak.subscribe((event) => {
-  const { block } = event;
+  const { block, brokenBlockPermutation, dimension } = event;
   
-  if (block && block.typeId === CONFIG.BLOCK_ID) {
+  // Check if broken block was an apple or had an apple on it
+  if (brokenBlockPermutation && brokenBlockPermutation.type.id === CONFIG.BLOCK_ID) {
     const key = `${block.location.x},${block.location.y},${block.location.z}`;
     appleTracking.delete(key);
+    
+    // Drop apple item
+    if (dimension) {
+      const appleItem = new ItemStack(CONFIG.APPLE_ITEM_ID, 1);
+      dimension.spawnItem(appleItem, block.location);
+    }
+  }
+});
+
+/**
+ * Listen for player interaction with blocks to handle clippers harvesting
+ */
+world.afterEvents.playerInteractWithBlock.subscribe((event) => {
+  const { player, block } = event;
+  
+  // Check if block is an apple
+  if (block.typeId !== CONFIG.BLOCK_ID) {
+    return;
+  }
+  
+  // Check if player is holding clippers
+  const inventory = player.getComponent("minecraft:inventory");
+  if (!inventory) {
+    return;
+  }
+  
+  const container = inventory.container;
+  const selectedSlot = player.selectedSlotIndex;
+  const heldItem = container.getItem(selectedSlot);
+  
+  if (heldItem && heldItem.typeId === CONFIG.CLIPPERS_ID) {
+    // Harvest with clippers (non-destructive)
+    event.cancel = true;
+    harvestWithClippers(player, block);
   }
 });
 
