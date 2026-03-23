@@ -13,6 +13,14 @@
       "type": "data",
       "uuid": "00000000-0000-0000-0000-000000000002",
       "version": [1, 0, 0]
+    },
+    {
+      "description": "Script Module",
+      "type": "script",
+      "language": "javascript",
+      "uuid": "00000000-0000-0000-0000-000000000004",
+      "version": [1, 0, 0],
+      "entry": "scripts/index.js"
     }
   ],
   "dependencies": [
