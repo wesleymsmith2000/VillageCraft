@@ -7,7 +7,8 @@
       "is_experimental": false
     },
     "components": {
-      "minecraft:icon": "hanging_ladder",
+      "minecraft:icon": "ladder",
+      "minecraft:block": "custom:hanging_ladder",
       "minecraft:render_offsets": "item",
       "minecraft:can_destroy_in_creative": true
     }

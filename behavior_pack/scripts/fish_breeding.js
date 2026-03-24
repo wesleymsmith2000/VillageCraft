@@ -318,33 +318,27 @@ world.afterEvents.playerInteractWithEntity.subscribe((event) => {
     return;
   }
   
-  // Check if player is holding kelp
+  // Check if player is holding kelp in selected slot
   const inventory = player.getComponent("minecraft:inventory");
   if (!inventory) {
     return;
   }
   
   const container = inventory.container;
+  const selectedSlot = player.selectedSlotIndex;
+  const item = container.getItem(selectedSlot);
+  if (!item) {
+    return;
+  }
+  
   let hasBreedingItem = false;
-  let breedingSlot = -1;
   let isOctopusFood = false;
   
-  for (let i = 0; i < container.size; i++) {
-    const item = container.getItem(i);
-    if (!item) continue;
-
-    if (CONFIG.OCTOPUS_TYPES.includes(target.typeId) && CONFIG.OCTOPUS_BREEDING_ITEMS.includes(item.typeId)) {
-      hasBreedingItem = true;
-      breedingSlot = i;
-      isOctopusFood = true;
-      break;
-    }
-
-    if (target.typeId !== CONFIG.OCTOPUS_ID && CONFIG.BREEDING_ITEMS.includes(item.typeId)) {
-      hasBreedingItem = true;
-      breedingSlot = i;
-      break;
-    }
+  if (CONFIG.OCTOPUS_TYPES.includes(target.typeId) && CONFIG.OCTOPUS_BREEDING_ITEMS.includes(item.typeId)) {
+    hasBreedingItem = true;
+    isOctopusFood = true;
+  } else if (target.typeId !== CONFIG.OCTOPUS_ID && CONFIG.BREEDING_ITEMS.includes(item.typeId)) {
+    hasBreedingItem = true;
   }
   
   if (!hasBreedingItem) {

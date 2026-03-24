@@ -13,7 +13,7 @@ import { world, system, Player, Entity } from "@minecraft/server";
 const golemStates = new Map();
 
 const GOLEM_ID = "custom:archer_golem";
-const REDSTONE_ITEM = "minecraft:redstone";
+const REDSTONE_ITEM = "minecraft:emerald";
 
 // Define interaction modes
 const MODES = {

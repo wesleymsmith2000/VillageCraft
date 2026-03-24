@@ -1,0 +1,12 @@
+{
+  "resource_pack_name": "VillageCraft",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "hanging_ladder": {
+      "textures": "textures/items/ladder"
+    },
+    "village_waypoint": {
+      "textures": "textures/blocks/beacon"
+    }
+  }
+}

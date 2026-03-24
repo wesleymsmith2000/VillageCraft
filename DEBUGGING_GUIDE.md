@@ -111,7 +111,7 @@ Your `.vscode/launch.json` is already configured. To start debugging:
 
 **Test steps:**
 1. Breakpoint at line ~200: `validateHangingLadder(block);`
-2. Craft hanging ladder (8 ladder + 1 chain)
+2. Craft hanging ladder (8 ladders + 1 chain)
 3. Place on wall/in air/chain
 4. Inspect: `isSupportedHangingLadder()`, neighbor checks
 

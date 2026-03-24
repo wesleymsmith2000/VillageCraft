@@ -14,7 +14,7 @@ import { world, system, ItemStack, BlockPermutation } from "@minecraft/server";
 
 // Configuration
 const CONFIG = {
-  CLIPPERS_ID: "custom:clippers",
+  CLIPPERS_ID: "minecraft:shears",
   CLIPPERS_DURABILITY_COST: 1,
   PARTICLE_HARVEST: "minecraft:crop_dust",
   CROPS: {
