@@ -166,7 +166,7 @@ Filter by system:
 | Can't see console | Press `/` in game, scroll to bottom |
 | Breakpoints not pausing | Check packs are loaded in world settings |
 | "DEBUG:" messages don't show | Verify console.warn() calls added |
-| Port 19144 in use | Edit `.vscode/launch.json` port number |
+| Port 19144 in use | Edit `.vscode/launch.json` port number (now set to 19145) |
 
 ---
 
