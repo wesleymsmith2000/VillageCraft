@@ -261,3 +261,4 @@ system.runInterval(() => {
 }, CONFIG.CHECK_INTERVAL);
 
 console.warn("[Hanging Ladder] System loaded");
+console.warn("[Hanging Ladder] DEBUG: Support chain validation initialized");

@@ -1,0 +1,64 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Install Minecraft Debugger Extension",
+      "type": "shell",
+      "command": "code",
+      "args": [
+        "--install-extension",
+        "mojang-studios.minecraft-debugger"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false
+      }
+    },
+    {
+      "label": "Install Blockception Minecraft Extension",
+      "type": "shell",
+      "command": "code",
+      "args": [
+        "--install-extension",
+        "blockceptionltd.blockceptionvscodeminecraftbedrockdevelopmentextension"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false
+      }
+    },
+    {
+      "label": "Launch Minecraft Bedrock",
+      "type": "shell",
+      "command": "explorer.exe",
+      "args": [
+        "shell:appsFolder\\Microsoft.MinecraftUWP_8wekyb3d8bbwe!App"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false
+      }
+    },
+    {
+      "label": "Copy packs to Minecraft dev folder",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "cp -r 'behavior_pack' \"C:\\Users\\wesle\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\development_behavior_packs\\VillageCraft-behavior\" && cp -r 'resource_pack' \"C:\\Users\\wesle\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\development_resource_packs\\VillageCraft-resource\""
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false
+      }
+    }
+  ]
+}

@@ -342,6 +342,7 @@ setupTeleportCommand();
 console.warn("[Waypoint] System initialized");
 console.warn("[Waypoint] Teleport range: " + CONFIG.ENTITY_TELEPORT_RANGE + " blocks");
 console.warn("[Waypoint] Boat types supported: " + CONFIG.PASSENGER_TYPES.length);
+console.warn("[Waypoint] DEBUG: Set breakpoints for waypoint interactions");
 
 // Export functions for external use
 export { registerWaypoint, linkWaypoints, teleportToWaypoint, teleportToNextWaypoint, getLinkedWaypoints };

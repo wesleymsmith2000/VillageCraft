@@ -451,3 +451,4 @@ system.runInterval(() => {
 console.warn("[Apple Growth] System initialized");
 console.warn(`Spread interval: ${CONFIG.SPREAD_INTERVAL / 20 / 60} minutes`);
 console.warn(`Compatible leaves: ${CONFIG.COMPATIBLE_LEAVES.join(", ")}`);
+console.warn("[Apple Growth] DEBUG: Ready for apple spread monitoring");

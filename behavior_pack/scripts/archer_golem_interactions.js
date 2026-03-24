@@ -205,3 +205,4 @@ world.afterEvents.entityDie.subscribe((event) => {
 // Log initialization
 console.warn("[Archer Golem] Interaction handler loaded");
 console.warn("Interactions: Shift+Click = Toggle Follow/Idle | Click = Toggle Passive/Follow | Click+Redstone = Heal");
+console.warn("[Archer Golem] DEBUG: Golem states tracking initialized");

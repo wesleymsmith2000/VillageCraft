@@ -506,3 +506,5 @@ console.warn("[Fish Breeding] Supported fish: " + CONFIG.FISH_TYPES.join(", "));
 console.warn("[Fish Breeding] Breeding items: " + CONFIG.BREEDING_ITEMS.join(", "));
 console.warn("[Fish Breeding] Love duration: " + (CONFIG.LOVE_MODE_DURATION / 1000) + " seconds");
 console.warn("[Fish Breeding] Octopus (axolotl) can breed with any fish type");
+console.warn("[Fish Breeding] DEBUG: Mutation chance = " + (CONFIG.MUTATION_CHANCE * 100) + "%");
+console.warn("[Fish Breeding] DEBUG: Dried kelp feed radius = " + CONFIG.DRIED_KELP_FEED_RADIUS + " blocks");
