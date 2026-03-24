@@ -24,14 +24,20 @@ Or use VS Code Tasks (Ctrl+Shift+P → "Run Task"):
    cp -r resource_pack "C:\Users\wesle\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\development_resource_packs\VillageCraft-resource"
    ```
 
-2. Open Minecraft Bedrock
 3. Create new world with:
-   - ✅ **Holiday Creator Features** enabled
-   - ✅ **GameTest Framework** enabled
+   - ✅ **Beta APIs** enabled (for scripting)
+   - ✅ **Upcoming Creator Features** enabled (for creator content)
+   - ✅ **GameTest Framework** enabled (if available)
    - Add both **VillageCraft-behavior** and **VillageCraft-resource** packs
 
 ### Option B: VS Code Task
 Run task: `Copy packs to Minecraft dev folder`
+
+### Option C: .mcaddon Import (Recommended)
+1. Locate the `VillageCraft.mcaddon` file in your project root
+2. Double-click the file to open it with Minecraft Bedrock
+3. Minecraft will automatically install the packs
+4. Create new world with the same settings as Option A
 
 ---
 
@@ -156,7 +162,7 @@ Filter by system:
 
 | Issue | Solution |
 |-------|----------|
-| Debugger won't connect | Ensure Holiday Creator + GameTest enabled |
+| Debugger won't connect | Ensure Beta APIs + Upcoming Creator Features + GameTest enabled |
 | Can't see console | Press `/` in game, scroll to bottom |
 | Breakpoints not pausing | Check packs are loaded in world settings |
 | "DEBUG:" messages don't show | Verify console.warn() calls added |
