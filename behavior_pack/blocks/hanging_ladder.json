@@ -1,0 +1,37 @@
+{
+  "format_version": "1.20.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "custom:hanging_ladder",
+      "is_experimental": false,
+      "register_to_creative_menu": true
+    },
+    "components": {
+      "minecraft:climbable": {},
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "hanging_ladder",
+          "render_method": "opaque"
+        }
+      },
+      "minecraft:destroy_time": 0.4,
+      "minecraft:explosion_resistance": 2.0,
+      "minecraft:friction": 0.8,
+      "minecraft:map_color": "#8B4513",
+      "minecraft:light_emission": 0,
+      "minecraft:collision_box": {
+        "origin": [0, 0, 0],
+        "size": [16, 16, 16]
+      },
+      "minecraft:selection_box": {
+        "origin": [0, 0, 0],
+        "size": [16, 16, 16]
+      },
+      "minecraft:block_light_absorption": 0,
+      "minecraft:flammable": {
+        "burn_odds": 30,
+        "burn_range": 60
+      }
+    }
+  }
+}

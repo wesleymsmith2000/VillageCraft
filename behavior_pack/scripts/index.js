@@ -12,5 +12,6 @@ import "./clippers_harvesting.js";
 import "./dispenser_clippers.js";
 import "./waypoint_system.js";
 import "./fish_breeding.js";
+import "./hanging_ladder.js";
 
 console.warn("[VillageCraft] All systems initialized successfully");

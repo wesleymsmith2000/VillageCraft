@@ -1,0 +1,26 @@
+{
+  "format_version": "1.19.50",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "custom:hanging_ladder"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "LLL",
+      "LCL",
+      "LLL"
+    ],
+    "key": {
+      "L": {
+        "item": "minecraft:ladder"
+      },
+      "C": {
+        "item": "minecraft:chain"
+      }
+    },
+    "result": {
+      "item": "custom:hanging_ladder",
+      "count": 9
+    }
+  }
+}
