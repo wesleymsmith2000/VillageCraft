@@ -59,6 +59,21 @@
         "reveal": "always",
         "focus": false
       }
+    },
+    {
+      "label": "Build VillageCraft.mcaddon",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "-c",
+        "import zipfile, os; def zipdir(p, z): [z.write(os.path.join(r, f), os.path.relpath(os.path.join(r, f), os.path.join(p, '..'))) for r, d, fs in os.walk(p) for f in fs]; z=zipfile.ZipFile('VillageCraft.mcaddon', 'w', zipfile.ZIP_DEFLATED); zipdir('behavior_pack', z); zipdir('resource_pack', z); z.close()"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false
+      }
     }
   ]
 }

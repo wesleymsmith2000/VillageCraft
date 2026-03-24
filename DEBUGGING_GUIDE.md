@@ -34,7 +34,7 @@ Or use VS Code Tasks (Ctrl+Shift+P → "Run Task"):
 Run task: `Copy packs to Minecraft dev folder`
 
 ### Option C: .mcaddon Import (Recommended)
-1. Locate the `VillageCraft.mcaddon` file in your project root
+1. Locate the `VillageCraft.mcaddon` file in your project root (or run VS Code task: `Build VillageCraft.mcaddon` to generate/update it)
 2. Double-click the file to open it with Minecraft Bedrock
 3. Minecraft will automatically install the packs
 4. Create new world with the same settings as Option A
