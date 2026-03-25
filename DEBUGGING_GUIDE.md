@@ -20,12 +20,19 @@ Or use VS Code Tasks (Ctrl+Shift+P → "Run Task"):
 ### Option A: Manual Setup
 1. Copy packs to Minecraft dev folder:
    ```powershell
-   $bpDest = Join-Path $env:LOCALAPPDATA "Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\development_behavior_packs\VillageCraft-behavior"
-   $rpDest = Join-Path $env:LOCALAPPDATA "Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\development_resource_packs\VillageCraft-resource"
-   if (Test-Path $bpDest) { Remove-Item $bpDest -Recurse -Force }
-   if (Test-Path $rpDest) { Remove-Item $rpDest -Recurse -Force }
-   Copy-Item .\behavior_pack $bpDest -Recurse -Force
-   Copy-Item .\resource_pack $rpDest -Recurse -Force
+   $roots = @(
+     (Join-Path $env:LOCALAPPDATA "Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang"),
+     (Join-Path $env:APPDATA "Minecraft Bedrock\Users\Shared\games\com.mojang")
+   )
+   foreach ($root in $roots) {
+     if (-not (Test-Path $root)) { continue }
+     $bpDest = Join-Path $root "development_behavior_packs\VillageCraft-behavior"
+     $rpDest = Join-Path $root "development_resource_packs\VillageCraft-resource"
+     if (Test-Path $bpDest) { Remove-Item $bpDest -Recurse -Force }
+     if (Test-Path $rpDest) { Remove-Item $rpDest -Recurse -Force }
+     Copy-Item .\behavior_pack $bpDest -Recurse -Force
+     Copy-Item .\resource_pack $rpDest -Recurse -Force
+   }
    ```
 
 3. Create new world with:
