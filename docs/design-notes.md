@@ -256,6 +256,7 @@ Hanging ladders provide vertical climb with support transfer in both directions.
 - **Crafting**: 8x `minecraft:ladder` around `minecraft:chain` -> 9x `custom:hanging_ladder`
 - **Support rules**:
   - Acts as normal ladder when any horizontal block is solid.
+  - Can be anchored directly beneath a solid block.
   - Can remain in place if a supported `custom:hanging_ladder` or `minecraft:ladder` is directly above or below.
 - **Extension**:
   - Right-click top face: place new hanging ladder above when holding one.

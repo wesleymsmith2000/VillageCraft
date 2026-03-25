@@ -1,0 +1,58 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.villagecraft_hanging_ladder",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 2,
+        "visible_bounds_offset": [0, 0.5, 0]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [0, 0, 0],
+          "cubes": [
+            {
+              "origin": [3, 0, 7],
+              "size": [2, 12, 2],
+              "uv": [3, 4]
+            },
+            {
+              "origin": [11, 0, 7],
+              "size": [2, 12, 2],
+              "uv": [11, 4]
+            },
+            {
+              "origin": [5, 1, 7],
+              "size": [6, 1, 2],
+              "uv": [5, 14]
+            },
+            {
+              "origin": [5, 4, 7],
+              "size": [6, 1, 2],
+              "uv": [5, 11]
+            },
+            {
+              "origin": [5, 7, 7],
+              "size": [6, 1, 2],
+              "uv": [5, 8]
+            },
+            {
+              "origin": [5, 10, 7],
+              "size": [6, 1, 2],
+              "uv": [5, 5]
+            },
+            {
+              "origin": [7, 12, 7],
+              "size": [2, 4, 2],
+              "uv": [7, 0]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

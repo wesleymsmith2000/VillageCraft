@@ -8,10 +8,11 @@
     },
     "components": {
       "minecraft:climbable": {},
+      "minecraft:geometry": "geometry.villagecraft_hanging_ladder",
       "minecraft:material_instances": {
         "*": {
           "texture": "hanging_ladder",
-          "render_method": "opaque"
+          "render_method": "alpha_test"
         }
       },
       "minecraft:destroy_time": 0.4,

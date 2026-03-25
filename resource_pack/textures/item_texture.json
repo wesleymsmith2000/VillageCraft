@@ -3,7 +3,7 @@
   "texture_name": "atlas.items",
   "texture_data": {
     "hanging_ladder": {
-      "textures": "textures/items/ladder"
+      "textures": "textures/items/hanging_ladder"
     },
     "village_waypoint": {
       "textures": "textures/blocks/beacon"

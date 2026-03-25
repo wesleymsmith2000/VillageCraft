@@ -164,6 +164,7 @@ CRAFTING:
 
 PLACEMENT:
 - Place on solid blocks like normal ladder
+- Place under a solid block to hang from above
 - Can hang in chains (supported above/below)
 - Support: Any ladder or hanging ladder above/below
 
@@ -174,6 +175,7 @@ EXTENDING:
 
 SUPPORT RULES:
 - Stays if attached to solid block
+- Stays if anchored to a solid block above
 - Stays if supported by ladder chain
 - Falls if unsupported (breaks chain)
 

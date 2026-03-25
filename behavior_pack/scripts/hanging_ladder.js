@@ -70,6 +70,16 @@ function hasWallSupport(block) {
   return false;
 }
 
+function hasTopSupport(block) {
+  const above = block.dimension.getBlock({
+    x: block.location.x,
+    y: block.location.y + 1,
+    z: block.location.z
+  });
+
+  return isSolidBlock(above);
+}
+
 const hangingLadders = new Map(); // key -> dimensionId
 
 function posKey(location) {
@@ -91,6 +101,10 @@ function isSupportedHangingLadder(block, visited = new Set()) {
   visited.add(key);
 
   if (hasWallSupport(block)) {
+    return true;
+  }
+
+  if (hasTopSupport(block)) {
     return true;
   }
 
@@ -154,6 +168,13 @@ function getBlockBelow(block) {
   });
 }
 
+function playPlacementSound(dimension, location) {
+  const { x, y, z } = location;
+  dimension.runCommandAsync(
+    `playsound use.wood @a[x=${x},y=${y},z=${z},r=12] ${x} ${y} ${z} 0.8 1.0`
+  ).catch(() => {});
+}
+
 world.afterEvents.blockPlace.subscribe((event) => {
   const { block } = event;
   if (block.typeId !== CONFIG.BLOCK_ID) {
@@ -163,6 +184,7 @@ world.afterEvents.blockPlace.subscribe((event) => {
   const key = posKey(block.location);
   hangingLadders.set(key, block.dimension.id);
   validateHangingLadder(block);
+  playPlacementSound(block.dimension, block.location);
 });
 
 world.afterEvents.blockBreak.subscribe((event) => {
@@ -230,6 +252,7 @@ world.afterEvents.playerInteractWithBlock.subscribe((event) => {
   }
 
   dimension.runCommandAsync(`setblock ${targetPos.x} ${targetPos.y} ${targetPos.z} custom:hanging_ladder`);
+  playPlacementSound(dimension, targetPos);
   const stack = container.getItem(slotIndex);
   stack.amount -= 1;
   if (stack.amount <= 0) {
