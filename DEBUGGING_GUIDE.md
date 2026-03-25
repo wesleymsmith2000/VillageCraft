@@ -19,9 +19,13 @@ Or use VS Code Tasks (Ctrl+Shift+P → "Run Task"):
 
 ### Option A: Manual Setup
 1. Copy packs to Minecraft dev folder:
-   ```bash
-   cp -r behavior_pack "C:\Users\wesle\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\development_behavior_packs\VillageCraft-behavior"
-   cp -r resource_pack "C:\Users\wesle\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\development_resource_packs\VillageCraft-resource"
+   ```powershell
+   $bpDest = Join-Path $env:LOCALAPPDATA "Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\development_behavior_packs\VillageCraft-behavior"
+   $rpDest = Join-Path $env:LOCALAPPDATA "Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\development_resource_packs\VillageCraft-resource"
+   if (Test-Path $bpDest) { Remove-Item $bpDest -Recurse -Force }
+   if (Test-Path $rpDest) { Remove-Item $rpDest -Recurse -Force }
+   Copy-Item .\behavior_pack $bpDest -Recurse -Force
+   Copy-Item .\resource_pack $rpDest -Recurse -Force
    ```
 
 3. Create new world with:
@@ -33,6 +37,8 @@ Or use VS Code Tasks (Ctrl+Shift+P → "Run Task"):
 ### Option B: VS Code Task
 Run task: `Copy packs to Minecraft dev folder`
 
+Or run task: `Prepare Minecraft Debugging`
+
 ### Option C: .mcaddon Import (Recommended)
 1. Locate the `VillageCraft.mcaddon` file in your project root (or run VS Code task: `Build VillageCraft.mcaddon` to generate/update it)
 2. Double-click the file to open it with Minecraft Bedrock
@@ -43,7 +49,7 @@ Run task: `Copy packs to Minecraft dev folder`
 
 ## 3. Debug Configuration
 
-Your `.vscode/launch.json` is already configured. To start debugging:
+Your `.vscode/launch.json` is already configured with both common Bedrock debugger ports. To start debugging:
 
 1. **Launch Minecraft** with your world
 2. **In VS Code**: Press **F5** (Run → Start Debugging)
@@ -162,11 +168,12 @@ Filter by system:
 
 | Issue | Solution |
 |-------|----------|
-| Debugger won't connect | Ensure Beta APIs + Upcoming Creator Features + GameTest enabled |
+| Debugger won't connect | Ensure Beta APIs + Upcoming Creator Features + GameTest enabled, then try both 19144 and 19145 launch profiles |
 | Can't see console | Press `/` in game, scroll to bottom |
-| Breakpoints not pausing | Check packs are loaded in world settings |
+| Breakpoints not pausing | Run `Copy packs to Minecraft dev folder`, then check packs are loaded in world settings |
 | "DEBUG:" messages don't show | Verify console.warn() calls added |
-| Port 19144 in use | Edit `.vscode/launch.json` port number (now set to 19145) |
+| Copy task fails | This workspace uses PowerShell for pack sync; no `bash` install is required |
+| Port 19144 in use | Use the `Minecraft Bedrock Debugger (19145)` launch profile |
 
 ---
 

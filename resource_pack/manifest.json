@@ -11,14 +11,14 @@
     {
       "description": "Resource Pack Module",
       "type": "resources",
-      "uuid": "00000000-0000-0000-0000-000000000004",
-      "version": [1, 0, 0]
+      "uuid": "8f0f8d3e-69e3-4a15-939a-c6ee830b5b1e",
+      "version": [1, 0, 1]
     }
   ],
   "dependencies": [
     {
       "uuid": "00000000-0000-0000-0000-000000000001",
-      "version": [1, 0, 0]
+      "version": [1, 0, 1]
     }
   ]
 }

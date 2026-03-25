@@ -48,10 +48,13 @@
     {
       "label": "Copy packs to Minecraft dev folder",
       "type": "shell",
-      "command": "bash",
+      "command": "powershell",
       "args": [
-        "-c",
-        "cp -r 'behavior_pack' \"C:\\Users\\wesle\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\development_behavior_packs\\VillageCraft-behavior\" && cp -r 'resource_pack' \"C:\\Users\\wesle\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\development_resource_packs\\VillageCraft-resource\""
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "$bpDest = Join-Path $env:LOCALAPPDATA 'Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\development_behavior_packs\\VillageCraft-behavior'; $rpDest = Join-Path $env:LOCALAPPDATA 'Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\development_resource_packs\\VillageCraft-resource'; if (Test-Path $bpDest) { Remove-Item $bpDest -Recurse -Force }; if (Test-Path $rpDest) { Remove-Item $rpDest -Recurse -Force }; Copy-Item (Join-Path '${workspaceFolder}' 'behavior_pack') $bpDest -Recurse -Force; Copy-Item (Join-Path '${workspaceFolder}' 'resource_pack') $rpDest -Recurse -Force"
       ],
       "problemMatcher": [],
       "presentation": {
@@ -59,6 +62,15 @@
         "reveal": "always",
         "focus": false
       }
+    },
+    {
+      "label": "Prepare Minecraft Debugging",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Copy packs to Minecraft dev folder",
+        "Launch Minecraft Bedrock"
+      ],
+      "problemMatcher": []
     },
     {
       "label": "Build VillageCraft.mcaddon",

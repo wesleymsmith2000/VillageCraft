@@ -12,21 +12,21 @@
       "description": "Behavior Pack Module",
       "type": "data",
       "uuid": "00000000-0000-0000-0000-000000000002",
-      "version": [1, 0, 0]
+      "version": [1, 0, 1]
     },
     {
       "description": "Script Module",
       "type": "script",
       "language": "javascript",
       "uuid": "00000000-0000-0000-0000-000000000004",
-      "version": [1, 0, 0],
+      "version": [1, 0, 1],
       "entry": "scripts/index.js"
     }
   ],
   "dependencies": [
     {
       "uuid": "00000000-0000-0000-0000-000000000003",
-      "version": [1, 0, 0]
+      "version": [1, 0, 1]
     }
   ]
 }

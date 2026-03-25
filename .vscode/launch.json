@@ -4,8 +4,16 @@
     {
       "type": "minecraft-js",
       "request": "attach",
-      "name": "Minecraft Bedrock Debugger",
-      "port": 19145
+      "name": "Minecraft Bedrock Debugger (19144)",
+      "port": 19144,
+      "preLaunchTask": "Copy packs to Minecraft dev folder"
+    },
+    {
+      "type": "minecraft-js",
+      "request": "attach",
+      "name": "Minecraft Bedrock Debugger (19145)",
+      "port": 19145,
+      "preLaunchTask": "Copy packs to Minecraft dev folder"
     }
   ]
 }
