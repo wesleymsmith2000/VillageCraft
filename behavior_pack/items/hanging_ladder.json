@@ -1,5 +1,5 @@
 {
-  "format_version": "1.20.0",
+  "format_version": "1.21.50",
   "minecraft:item": {
     "description": {
       "identifier": "custom:hanging_ladder",
@@ -8,7 +8,10 @@
     },
     "components": {
       "minecraft:icon": "hanging_ladder",
-      "minecraft:block": "custom:hanging_ladder",
+      "minecraft:block_placer": {
+        "block": "custom:hanging_ladder",
+        "replace_block_item": true
+      },
       "minecraft:render_offsets": "item",
       "minecraft:can_destroy_in_creative": true
     }

@@ -51,9 +51,8 @@ function isSolidBlock(block) {
   return true;
 }
 
-function hasWallSupport(block) {
-  const dimension = block.dimension;
-  const { x, y, z } = block.location;
+function hasWallSupportAt(dimension, location) {
+  const { x, y, z } = location;
   const neighbours = [
     { x: x + 1, y: y, z: z },
     { x: x - 1, y: y, z: z },
@@ -70,14 +69,22 @@ function hasWallSupport(block) {
   return false;
 }
 
-function hasTopSupport(block) {
-  const above = block.dimension.getBlock({
-    x: block.location.x,
-    y: block.location.y + 1,
-    z: block.location.z
+function hasWallSupport(block) {
+  return hasWallSupportAt(block.dimension, block.location);
+}
+
+function hasTopSupportAt(dimension, location) {
+  const above = dimension.getBlock({
+    x: location.x,
+    y: location.y + 1,
+    z: location.z
   });
 
   return isSolidBlock(above);
+}
+
+function hasTopSupport(block) {
+  return hasTopSupportAt(block.dimension, block.location);
 }
 
 const hangingLadders = new Map(); // key -> dimensionId
@@ -86,38 +93,68 @@ function posKey(location) {
   return `${location.x},${location.y},${location.z}`;
 }
 
+function isEmptyBlockForPlacement(block) {
+  return !!block && ["minecraft:air", "minecraft:cave_air"].includes(block.typeId);
+}
+
+function getLocationForFace(location, face) {
+  const offsets = {
+    down: { x: 0, y: -1, z: 0 },
+    up: { x: 0, y: 1, z: 0 },
+    north: { x: 0, y: 0, z: -1 },
+    south: { x: 0, y: 0, z: 1 },
+    west: { x: -1, y: 0, z: 0 },
+    east: { x: 1, y: 0, z: 0 },
+    0: { x: 0, y: -1, z: 0 },
+    1: { x: 0, y: 1, z: 0 },
+    2: { x: 0, y: 0, z: -1 },
+    3: { x: 0, y: 0, z: 1 },
+    4: { x: -1, y: 0, z: 0 },
+    5: { x: 1, y: 0, z: 0 }
+  };
+
+  const offset = offsets[face];
+  if (!offset) {
+    return undefined;
+  }
+
+  return {
+    x: location.x + offset.x,
+    y: location.y + offset.y,
+    z: location.z + offset.z
+  };
+}
+
 
 function isLadderBlock(block) {
   if (!block) return false;
   return CONFIG.SUPPORTS.includes(block.typeId);
 }
 
-function isSupportedHangingLadder(block, visited = new Set()) {
-  if (!block || block.typeId !== CONFIG.BLOCK_ID) return false;
-  const key = `${block.location.x},${block.location.y},${block.location.z}`;
+function isSupportedHangingLadderAt(dimension, location, visited = new Set()) {
+  const key = posKey(location);
   if (visited.has(key)) {
     return false;
   }
   visited.add(key);
 
-  if (hasWallSupport(block)) {
+  if (hasWallSupportAt(dimension, location)) {
     return true;
   }
 
-  if (hasTopSupport(block)) {
+  if (hasTopSupportAt(dimension, location)) {
     return true;
   }
 
-  const dimension = block.dimension;
   const above = dimension.getBlock({
-    x: block.location.x,
-    y: block.location.y + 1,
-    z: block.location.z
+    x: location.x,
+    y: location.y + 1,
+    z: location.z
   });
   const below = dimension.getBlock({
-    x: block.location.x,
-    y: block.location.y - 1,
-    z: block.location.z
+    x: location.x,
+    y: location.y - 1,
+    z: location.z
   });
 
   if (above && above.typeId === "minecraft:ladder") {
@@ -128,18 +165,23 @@ function isSupportedHangingLadder(block, visited = new Set()) {
   }
 
   if (above && above.typeId === CONFIG.BLOCK_ID) {
-    if (isSupportedHangingLadder(above, visited)) {
+    if (isSupportedHangingLadderAt(dimension, above.location, visited)) {
       return true;
     }
   }
 
   if (below && below.typeId === CONFIG.BLOCK_ID) {
-    if (isSupportedHangingLadder(below, visited)) {
+    if (isSupportedHangingLadderAt(dimension, below.location, visited)) {
       return true;
     }
   }
 
   return false;
+}
+
+function isSupportedHangingLadder(block, visited = new Set()) {
+  if (!block || block.typeId !== CONFIG.BLOCK_ID) return false;
+  return isSupportedHangingLadderAt(block.dimension, block.location, visited);
 }
 
 function validateHangingLadder(block) {
@@ -173,6 +215,62 @@ function playPlacementSound(dimension, location) {
   dimension.runCommandAsync(
     `playsound use.wood @a[x=${x},y=${y},z=${z},r=12] ${x} ${y} ${z} 0.8 1.0`
   ).catch(() => {});
+}
+
+function consumeHangingLadderItem(player) {
+  const inv = player.getComponent("minecraft:inventory");
+  if (!inv) {
+    return false;
+  }
+
+  const container = inv.container;
+  let slotIndex = player.selectedSlotIndex ?? -1;
+  const selectedItem = slotIndex >= 0 ? container.getItem(slotIndex) : undefined;
+
+  if (!selectedItem || selectedItem.typeId !== CONFIG.BLOCK_ID) {
+    slotIndex = -1;
+    for (let i = 0; i < container.size; i++) {
+      const item = container.getItem(i);
+      if (item && item.typeId === CONFIG.BLOCK_ID) {
+        slotIndex = i;
+        break;
+      }
+    }
+  }
+
+  if (slotIndex === -1) {
+    return false;
+  }
+
+  const stack = container.getItem(slotIndex);
+  if (!stack) {
+    return false;
+  }
+
+  stack.amount -= 1;
+  if (stack.amount <= 0) {
+    container.setItem(slotIndex, undefined);
+  } else {
+    container.setItem(slotIndex, stack);
+  }
+
+  return true;
+}
+
+function placeHangingLadder(dimension, location) {
+  dimension.runCommandAsync(
+    `setblock ${location.x} ${location.y} ${location.z} ${CONFIG.BLOCK_ID}`
+  ).then(() => {
+    system.run(() => {
+      const block = dimension.getBlock(location);
+      if (!block || block.typeId !== CONFIG.BLOCK_ID) {
+        return;
+      }
+
+      hangingLadders.set(posKey(location), dimension.id);
+      validateHangingLadder(block);
+    });
+  }).catch(() => {});
 }
 
 world.afterEvents.blockPlace.subscribe((event) => {
@@ -263,6 +361,40 @@ world.afterEvents.playerInteractWithBlock.subscribe((event) => {
 
   player.onScreenDisplay.setActionBar("§aHanging ladder extended");
   event.cancel = true;
+});
+
+world.beforeEvents.playerInteractWithBlock.subscribe((event) => {
+  const { player, itemStack, block, face } = event;
+  if (!player || !itemStack || itemStack.typeId !== CONFIG.BLOCK_ID) {
+    return;
+  }
+  if (!block || block.typeId === CONFIG.BLOCK_ID) {
+    return;
+  }
+
+  const targetPos = getLocationForFace(block.location, face);
+  if (!targetPos) {
+    return;
+  }
+
+  const dimension = block.dimension;
+  const targetBlock = dimension.getBlock(targetPos);
+  if (!isEmptyBlockForPlacement(targetBlock)) {
+    return;
+  }
+  if (!isSupportedHangingLadderAt(dimension, targetPos)) {
+    return;
+  }
+
+  event.cancel = true;
+  system.run(() => {
+    if (!consumeHangingLadderItem(player)) {
+      return;
+    }
+
+    placeHangingLadder(dimension, targetPos);
+    playPlacementSound(dimension, targetPos);
+  });
 });
 
 system.runInterval(() => {

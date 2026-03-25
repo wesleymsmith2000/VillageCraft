@@ -1,10 +1,10 @@
 {
   "format_version": 2,
   "header": {
-    "description": "VillageCraft Resource Pack [DEV 1.0.2] - Custom textures, models, and render controllers",
-    "name": "VillageCraft Resource Pack [DEV 1.0.2]",
+    "description": "VillageCraft Resource Pack [DEV 1.0.4] - Custom textures, models, and render controllers",
+    "name": "VillageCraft Resource Pack [DEV 1.0.4]",
     "uuid": "00000000-0000-0000-0000-000000000003",
-    "version": [1, 0, 2],
+    "version": [1, 0, 4],
     "min_engine_version": [1, 20, 0]
   },
   "modules": [
@@ -12,13 +12,13 @@
       "description": "Resource Pack Module",
       "type": "resources",
       "uuid": "8f0f8d3e-69e3-4a15-939a-c6ee830b5b1e",
-      "version": [1, 0, 2]
+      "version": [1, 0, 4]
     }
   ],
   "dependencies": [
     {
       "uuid": "00000000-0000-0000-0000-000000000001",
-      "version": [1, 0, 2]
+      "version": [1, 0, 4]
     }
   ]
 }

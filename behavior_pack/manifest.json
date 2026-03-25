@@ -1,10 +1,10 @@
 {
   "format_version": 2,
   "header": {
-    "description": "VillageCraft Behavior Pack [DEV 1.0.2] - Custom villagers, golems, and village systems",
-    "name": "VillageCraft Behavior Pack [DEV 1.0.2]",
+    "description": "VillageCraft Behavior Pack [DEV 1.0.4] - Custom villagers, golems, and village systems",
+    "name": "VillageCraft Behavior Pack [DEV 1.0.4]",
     "uuid": "00000000-0000-0000-0000-000000000001",
-    "version": [1, 0, 2],
+    "version": [1, 0, 4],
     "min_engine_version": [1, 20, 0]
   },
   "modules": [
@@ -12,21 +12,21 @@
       "description": "Behavior Pack Module",
       "type": "data",
       "uuid": "00000000-0000-0000-0000-000000000002",
-      "version": [1, 0, 2]
+      "version": [1, 0, 4]
     },
     {
       "description": "Script Module",
       "type": "script",
       "language": "javascript",
       "uuid": "00000000-0000-0000-0000-000000000004",
-      "version": [1, 0, 2],
+      "version": [1, 0, 4],
       "entry": "scripts/index.js"
     }
   ],
   "dependencies": [
     {
       "uuid": "00000000-0000-0000-0000-000000000003",
-      "version": [1, 0, 2]
+      "version": [1, 0, 4]
     }
   ]
 }
