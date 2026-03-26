@@ -4,7 +4,7 @@
  * Teleports player's boat and nearby entities together
  */
 
-import { world, system, Vector3, BlockPermutation } from "@minecraft/server";
+import { world, system, BlockPermutation } from "@minecraft/server";
 
 const CONFIG = {
   WAYPOINT_BLOCK_ID: "custom:village_waypoint",

@@ -3,15 +3,9 @@
  * Imports and initializes all custom systems
  */
 
-// Import all system modules
-import "./documentation_book.js";
-import "./archer_golem_interactions.js";
-import "./apple_growth.js";
-import "./irrigation_system.js";
-import "./clippers_harvesting.js";
-import "./dispenser_clippers.js";
-import "./waypoint_system.js";
-import "./fish_breeding.js";
+import { world, system } from "@minecraft/server";
 import "./hanging_ladder.js";
 
-console.warn("[VillageCraft] All systems initialized successfully");
+system.run(() => {
+  world.sendMessage("VillageCraft DEV 1.0.17 ladder bootstrap loaded");
+});

@@ -1,36 +1,36 @@
 {
   "format_version": 2,
   "header": {
-    "description": "VillageCraft Behavior Pack [DEV 1.0.5] - Custom villagers, golems, and village systems",
-    "name": "VillageCraft Behavior Pack [DEV 1.0.5]",
-    "uuid": "00000000-0000-0000-0000-000000000001",
-    "version": [1, 0, 5],
-    "min_engine_version": [1, 20, 0]
+    "description": "VillageCraft Behavior Pack [DEV 1.0.21] - Sanitized full ladder test",
+    "name": "VillageCraft Behavior Pack [DEV 1.0.21]",
+    "uuid": "922f0540-5b31-4726-b642-f0255dcc432b",
+    "version": [1, 0, 21],
+    "min_engine_version": [1, 20, 30]
   },
   "modules": [
     {
       "description": "Behavior Pack Module",
       "type": "data",
-      "uuid": "00000000-0000-0000-0000-000000000002",
-      "version": [1, 0, 5]
+      "uuid": "cbbcbcab-8b4c-49dd-9b2e-0666994964cf",
+      "version": [1, 0, 21]
     },
     {
       "description": "Script Module",
       "type": "script",
       "language": "javascript",
-      "uuid": "00000000-0000-0000-0000-000000000004",
-      "version": [1, 0, 5],
-      "entry": "scripts/index.js"
+      "uuid": "f993025f-99ec-48d8-baa1-4595d7c3e53a",
+      "version": [1, 0, 21],
+      "entry": "scripts/hanging_ladder_full.js"
     }
   ],
   "dependencies": [
     {
       "module_name": "@minecraft/server",
-      "version": "2.1.0"
+      "version": "1.5.0"
     },
     {
-      "uuid": "00000000-0000-0000-0000-000000000003",
-      "version": [1, 0, 5]
+      "uuid": "1bc6e981-1614-4f2c-988c-f6008ceed923",
+      "version": [1, 0, 21]
     }
   ]
 }

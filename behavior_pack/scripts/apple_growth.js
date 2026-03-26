@@ -10,7 +10,7 @@
  * - Apples can be harvested by breaking the leaf block or using clippers (non-destructive)
  */
 
-import { world, system, BlockPermutation, Direction, ItemStack } from "@minecraft/server";
+import { world, system, BlockPermutation, ItemStack } from "@minecraft/server";
 
 // Configuration
 const CONFIG = {

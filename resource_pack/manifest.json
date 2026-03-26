@@ -1,24 +1,24 @@
 {
   "format_version": 2,
   "header": {
-    "description": "VillageCraft Resource Pack [DEV 1.0.5] - Custom textures, models, and render controllers",
-    "name": "VillageCraft Resource Pack [DEV 1.0.5]",
-    "uuid": "00000000-0000-0000-0000-000000000003",
-    "version": [1, 0, 5],
-    "min_engine_version": [1, 20, 0]
+    "description": "VillageCraft Resource Pack [DEV 1.0.21] - Sanitized full ladder test",
+    "name": "VillageCraft Resource Pack [DEV 1.0.21]",
+    "uuid": "1bc6e981-1614-4f2c-988c-f6008ceed923",
+    "version": [1, 0, 21],
+    "min_engine_version": [1, 20, 30]
   },
   "modules": [
     {
       "description": "Resource Pack Module",
       "type": "resources",
-      "uuid": "8f0f8d3e-69e3-4a15-939a-c6ee830b5b1e",
-      "version": [1, 0, 5]
+      "uuid": "8b417d79-123d-439c-b6c7-4ade8fb95232",
+      "version": [1, 0, 21]
     }
   ],
   "dependencies": [
     {
-      "uuid": "00000000-0000-0000-0000-000000000001",
-      "version": [1, 0, 5]
+      "uuid": "922f0540-5b31-4726-b642-f0255dcc432b",
+      "version": [1, 0, 21]
     }
   ]
 }

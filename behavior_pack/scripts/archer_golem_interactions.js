@@ -7,7 +7,7 @@
  * - Shift+Click: Toggle between follow and idle (attack) modes
  */
 
-import { world, system, Player, Entity } from "@minecraft/server";
+import { world, system } from "@minecraft/server";
 
 // Track golem states
 const golemStates = new Map();

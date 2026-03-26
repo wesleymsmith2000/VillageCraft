@@ -4,7 +4,7 @@
  * Supports all fish types (cod, salmon, tropical fish, pufferfish)
  */
 
-import { world, system, EntityQueryOptions, ItemStack } from "@minecraft/server";
+import { world, system, ItemStack } from "@minecraft/server";
 
 const CONFIG = {
   FISH_TYPES: [
