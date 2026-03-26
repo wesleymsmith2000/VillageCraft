@@ -1,13 +1,14 @@
 {
-  "format_version": "1.20.0",
+  "format_version": "1.21.50",
   "minecraft:block": {
     "description": {
       "identifier": "custom:hanging_ladder",
       "is_experimental": false,
-      "register_to_creative_menu": true
+      "menu_category": {
+        "category": "construction"
+      }
     },
     "components": {
-      "minecraft:climbable": {},
       "minecraft:geometry": "geometry.villagecraft_hanging_ladder",
       "minecraft:material_instances": {
         "*": {
@@ -15,11 +16,15 @@
           "render_method": "alpha_test"
         }
       },
-      "minecraft:destroy_time": 0.4,
-      "minecraft:explosion_resistance": 2.0,
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.4
+      },
+      "minecraft:destructible_by_explosion": {
+        "explosion_resistance": 2.0
+      },
       "minecraft:friction": 0.8,
       "minecraft:map_color": "#8B4513",
-      "minecraft:light_emission": 0,
+      "minecraft:light_dampening": 0,
       "minecraft:collision_box": {
         "origin": [0, 0, 0],
         "size": [16, 16, 16]
@@ -28,10 +33,9 @@
         "origin": [0, 0, 0],
         "size": [16, 16, 16]
       },
-      "minecraft:block_light_absorption": 0,
       "minecraft:flammable": {
-        "burn_odds": 30,
-        "burn_range": 60
+        "catch_chance_modifier": 30,
+        "destroy_chance_modifier": 60
       }
     }
   }

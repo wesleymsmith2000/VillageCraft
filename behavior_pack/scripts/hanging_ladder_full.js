@@ -192,12 +192,52 @@ function isSupportedHangingLadder(block, visited) {
   return isSupportedHangingLadderAt(block.dimension, block.location, visited);
 }
 
+function describeImmediateSupportAt(dimension, location) {
+  const support = [];
+
+  if (hasWallSupportAt(dimension, location)) {
+    support.push("wall");
+  }
+
+  if (hasTopSupportAt(dimension, location)) {
+    support.push("top");
+  }
+
+  const above = dimension.getBlock({
+    x: location.x,
+    y: location.y + 1,
+    z: location.z
+  });
+  const below = dimension.getBlock({
+    x: location.x,
+    y: location.y - 1,
+    z: location.z
+  });
+
+  if (above && above.typeId === "minecraft:ladder") {
+    support.push("ladder-above");
+  }
+  if (below && below.typeId === "minecraft:ladder") {
+    support.push("ladder-below");
+  }
+  if (above && above.typeId === CONFIG.BLOCK_ID) {
+    support.push("hanging-above");
+  }
+  if (below && below.typeId === CONFIG.BLOCK_ID) {
+    support.push("hanging-below");
+  }
+
+  return support.length > 0 ? support.join(", ") : "none";
+}
+
 function validateHangingLadder(block) {
   if (!block || block.typeId !== CONFIG.BLOCK_ID) {
     return;
   }
   if (!isSupportedHangingLadder(block)) {
-    block.dimension.runCommandAsync(`setblock ${block.location.x} ${block.location.y} ${block.location.z} air`);
+    try {
+      block.dimension.setBlockType(block.location, "minecraft:air");
+    } catch {}
     return;
   }
 }
@@ -279,20 +319,31 @@ function consumeHangingLadderItem(player) {
   return true;
 }
 
-function placeHangingLadder(dimension, location) {
-  dimension.runCommandAsync(
-    `setblock ${location.x} ${location.y} ${location.z} ${CONFIG.BLOCK_ID}`
-  ).then(() => {
+function placeHangingLadder(dimension, location, player) {
+  try {
+    dimension.setBlockType(location, CONFIG.BLOCK_ID);
     system.run(() => {
       const block = dimension.getBlock(location);
       if (!block || block.typeId !== CONFIG.BLOCK_ID) {
+        const actualTypeId = block && block.typeId ? block.typeId : "unknown";
+        debugPlayer(player, `Hanging ladder: setblock failed (${actualTypeId})`);
         return;
       }
 
       hangingLadders.set(posKey(location), dimension.id);
       validateHangingLadder(block);
+      const validatedBlock = dimension.getBlock(location);
+      if (validatedBlock && validatedBlock.typeId === CONFIG.BLOCK_ID) {
+        debugPlayer(player, "Hanging ladder: placement confirmed");
+      } else {
+        const postValidationTypeId = validatedBlock && validatedBlock.typeId ? validatedBlock.typeId : "air";
+        debugPlayer(player, `Hanging ladder: removed after validation (${postValidationTypeId})`);
+      }
     });
-  }).catch(() => {});
+  } catch (error) {
+    const errorText = error && error.message ? error.message : "command error";
+    debugPlayer(player, `Hanging ladder: setblock error ${errorText}`);
+  }
 }
 
 function subscribeSignal(signal, name, callback) {
@@ -428,14 +479,24 @@ subscribeSignal(world.afterEvents && world.afterEvents.playerInteractWithBlock, 
     return;
   }
 
-  dimension.runCommandAsync(`setblock ${targetPos.x} ${targetPos.y} ${targetPos.z} custom:hanging_ladder`);
-  playPlacementSound(dimension, targetPos);
-  const stack = container.getItem(slotIndex);
-  stack.amount -= 1;
-  if (stack.amount <= 0) {
-    container.setItem(slotIndex, undefined);
-  } else {
-    container.setItem(slotIndex, stack);
+  try {
+    dimension.setBlockType(targetPos, CONFIG.BLOCK_ID);
+    playPlacementSound(dimension, targetPos);
+    const stack = container.getItem(slotIndex);
+    stack.amount -= 1;
+    if (stack.amount <= 0) {
+      container.setItem(slotIndex, undefined);
+    } else {
+      container.setItem(slotIndex, stack);
+    }
+
+    hangingLadders.set(posKey(targetPos), dimension.id);
+    const placedBlock = dimension.getBlock(targetPos);
+    validateHangingLadder(placedBlock);
+  } catch (error) {
+    const errorText = error && error.message ? error.message : "command error";
+    debugPlayer(player, `Hanging ladder: extension setblock error ${errorText}`);
+    return;
   }
 
   player.onScreenDisplay.setActionBar("§aHanging ladder extended");
@@ -466,7 +527,7 @@ subscribeSignal(world.beforeEvents && world.beforeEvents.playerInteractWithBlock
       return;
     }
     if (!isSupportedHangingLadderAt(dimension, targetPos)) {
-      debugPlayer(player, "Hanging ladder: no valid support");
+      debugPlayer(player, `Hanging ladder: no valid support (${describeImmediateSupportAt(dimension, targetPos)})`);
       return;
     }
 
@@ -477,9 +538,9 @@ subscribeSignal(world.beforeEvents && world.beforeEvents.playerInteractWithBlock
         return;
       }
 
-      placeHangingLadder(dimension, targetPos);
+      placeHangingLadder(dimension, targetPos, player);
       playPlacementSound(dimension, targetPos);
-      debugPlayer(player, "Hanging ladder: placed via script");
+      debugPlayer(player, `Hanging ladder: placing at ${targetPos.x} ${targetPos.y} ${targetPos.z}`);
     });
 });
 
@@ -488,7 +549,7 @@ subscribeSignal(world.afterEvents && world.afterEvents.playerSpawn, "afterEvents
     return;
   }
 
-  debugPlayer(event.player, "VillageCraft DEV 1.0.26 scripts active");
+  debugPlayer(event.player, "VillageCraft DEV 1.0.29 scripts active");
 });
 
 startValidationLoop();
@@ -496,7 +557,7 @@ startValidationLoop();
 let heartbeatMessagesRemaining = 3;
 function heartbeatTick() {
   if (CONFIG.DEBUG && system.currentTick % 200 === 0 && heartbeatMessagesRemaining > 0) {
-    world.sendMessage("VillageCraft DEV 1.0.26 hanging ladder heartbeat");
+    world.sendMessage("VillageCraft DEV 1.0.29 hanging ladder heartbeat");
     heartbeatMessagesRemaining -= 1;
   }
 
