@@ -99,6 +99,7 @@ function isEmptyBlockForPlacement(block) {
 }
 
 function getLocationForFace(location, face) {
+  const normalizedFace = typeof face === "string" ? face.toLowerCase() : face;
   const offsets = {
     down: { x: 0, y: -1, z: 0 },
     up: { x: 0, y: 1, z: 0 },
@@ -114,7 +115,7 @@ function getLocationForFace(location, face) {
     5: { x: 1, y: 0, z: 0 }
   };
 
-  const offset = offsets[face];
+  const offset = offsets[normalizedFace];
   if (!offset) {
     return undefined;
   }
@@ -229,8 +230,13 @@ function debugPlayer(player, message) {
     return;
   }
 
-  player.onScreenDisplay.setActionBar(message);
-  console.warn(`[Hanging Ladder] ${message}`);
+  try {
+    player.onScreenDisplay.setActionBar(message);
+  } catch {}
+
+  try {
+    player.sendMessage(message);
+  } catch {}
 }
 
 function consumeHangingLadderItem(player) {
@@ -291,7 +297,6 @@ function placeHangingLadder(dimension, location) {
 
 function subscribeSignal(signal, name, callback) {
   if (!signal || !signal.subscribe) {
-    console.warn(`[Hanging Ladder] ${name} unavailable`);
     return false;
   }
 
@@ -383,23 +388,26 @@ subscribeSignal(world.afterEvents && world.afterEvents.blockBreak, "afterEvents.
 });
 
 subscribeSignal(world.afterEvents && world.afterEvents.playerInteractWithBlock, "afterEvents.playerInteractWithBlock", (event) => {
-  const { player, block, face } = event;
+  const { player, block, blockFace } = event;
   if (block.typeId !== CONFIG.BLOCK_ID) {
     return;
   }
 
   let targetPos;
-  if (face === "up" || face === 1) {
+  if (blockFace === "up" || blockFace === 1) {
     targetPos = { x: block.location.x, y: block.location.y + 1, z: block.location.z };
-  } else if (face === "down" || face === 0) {
+  } else if (blockFace === "down" || blockFace === 0) {
     targetPos = { x: block.location.x, y: block.location.y - 1, z: block.location.z };
   } else {
     return;
   }
 
+  debugPlayer(player, "Hanging ladder: extension interaction detected");
+
   const dimension = block.dimension;
   const targetBlock = dimension.getBlock(targetPos);
   if (!targetBlock || targetBlock.typeId !== "minecraft:air") {
+    debugPlayer(player, "Hanging ladder: extension blocked");
     return;
   }
 
@@ -431,11 +439,10 @@ subscribeSignal(world.afterEvents && world.afterEvents.playerInteractWithBlock, 
   }
 
   player.onScreenDisplay.setActionBar("§aHanging ladder extended");
-  event.cancel = true;
 });
 
 subscribeSignal(world.beforeEvents && world.beforeEvents.playerInteractWithBlock, "beforeEvents.playerInteractWithBlock", (event) => {
-    const { player, itemStack, block, face } = event;
+    const { player, itemStack, block, blockFace } = event;
     if (!player || !itemStack || itemStack.typeId !== CONFIG.BLOCK_ID) {
       return;
     }
@@ -443,7 +450,9 @@ subscribeSignal(world.beforeEvents && world.beforeEvents.playerInteractWithBlock
       return;
     }
 
-    const targetPos = getLocationForFace(block.location, face);
+    debugPlayer(player, `Hanging ladder: interact ${block.typeId} face ${blockFace}`);
+
+    const targetPos = getLocationForFace(block.location, blockFace);
     if (!targetPos) {
       debugPlayer(player, "Hanging ladder: unsupported face");
       return;
@@ -479,7 +488,7 @@ subscribeSignal(world.afterEvents && world.afterEvents.playerSpawn, "afterEvents
     return;
   }
 
-  debugPlayer(event.player, "VillageCraft DEV 1.0.15 scripts active");
+  debugPlayer(event.player, "VillageCraft DEV 1.0.26 scripts active");
 });
 
 startValidationLoop();
@@ -487,7 +496,7 @@ startValidationLoop();
 let heartbeatMessagesRemaining = 3;
 function heartbeatTick() {
   if (CONFIG.DEBUG && system.currentTick % 200 === 0 && heartbeatMessagesRemaining > 0) {
-    world.sendMessage("VillageCraft DEV 1.0.21 hanging ladder heartbeat");
+    world.sendMessage("VillageCraft DEV 1.0.26 hanging ladder heartbeat");
     heartbeatMessagesRemaining -= 1;
   }
 
@@ -495,6 +504,3 @@ function heartbeatTick() {
 }
 
 runLater(heartbeatTick);
-
-console.warn("[Hanging Ladder] System loaded");
-console.warn("[Hanging Ladder] DEBUG: Support chain validation initialized");

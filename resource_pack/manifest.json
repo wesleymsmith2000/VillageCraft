@@ -1,10 +1,10 @@
 {
   "format_version": 2,
   "header": {
-    "description": "VillageCraft Resource Pack [DEV 1.0.21] - Sanitized full ladder test",
-    "name": "VillageCraft Resource Pack [DEV 1.0.21]",
+    "description": "VillageCraft Resource Pack [DEV 1.0.26] - Hanging ladder face normalization fix",
+    "name": "VillageCraft Resource Pack [DEV 1.0.26]",
     "uuid": "1bc6e981-1614-4f2c-988c-f6008ceed923",
-    "version": [1, 0, 21],
+    "version": [1, 0, 26],
     "min_engine_version": [1, 20, 30]
   },
   "modules": [
@@ -12,13 +12,13 @@
       "description": "Resource Pack Module",
       "type": "resources",
       "uuid": "8b417d79-123d-439c-b6c7-4ade8fb95232",
-      "version": [1, 0, 21]
+      "version": [1, 0, 26]
     }
   ],
   "dependencies": [
     {
       "uuid": "922f0540-5b31-4726-b642-f0255dcc432b",
-      "version": [1, 0, 21]
+      "version": [1, 0, 26]
     }
   ]
 }
